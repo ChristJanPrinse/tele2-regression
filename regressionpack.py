@@ -264,7 +264,8 @@ class SimOnlyFieldValidation(Tele2Test):
 class Workflows(Tele2Test):
 
     def test_simonly_postpaid_noporting_delivery(self):
-        pass
+        print "testcase id = %s" % unittest.TestCase.id()
+        print "testcase shortdescription = %s" % unittest.TestCase.ShortDescription()
         
 
 # collect the tests and run them

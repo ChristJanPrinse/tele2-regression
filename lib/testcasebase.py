@@ -107,10 +107,13 @@ class Tele2Test(unittest.TestCase):
         M.close()
         M.logout()
 
-    def go_to_sim_only_step1(self):
+    def go_to_sim_only_configpage(self):
         self.cookiebar_accept()
         self.hover('menu', 'link_mobiel')
         self.elementcheck('menu', 'link_sim_only',click=True)
+
+    def go_to_sim_only_step1(self):
+        self.go_to_sim_only_configpage()
         self.elementcheck('configure_page', 'button_order',click=True)
 
     def go_to_sim_only_step2(self):
