@@ -261,6 +261,12 @@ class SimOnlyFieldValidation(Tele2Test):
         self.dropdownselector('step_2', 'select_idtype', 'idtype', 'drivers_licence')
         self.field_validation('step_2', 'input_documentnumber', 'select_idtype', settings.DRIVERSLICENCE, 'incorrect', 'documentnumber')
 
+class Workflows(Tele2Test):
+
+    def test_simonly_postpaid_noporting_delivery(self):
+        pass
+        
+
 # collect the tests and run them
 if __name__ == "__main__":
     unittest.main(verbosity=2)
