@@ -1,0 +1,196 @@
+from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+UI = {
+    'bank': {
+        'ing': '#bankSelectSelectBoxItOptions li.selectboxit-option[data-val="ing-bank"]',
+        'abn_amro': '#bankSelectSelectBoxItOptions li.selectboxit-option[data-val="abn-amro"]',
+    },
+    'configure_page': {
+        'button_order': 'a.add-cart.button',
+        'cookie': '#buttonAccept',
+    },
+    'current_subscription': {
+        'prepaid': '#type-of-subscriptionSelectBoxItOptions li.selectboxit-option[data-val="1"]',
+        'poatpaid': '#type-of-subscriptionSelectBoxItOptions li.selectboxit-option[data-val="2"]',
+    },
+    'day': {
+        '1': '#daySelectBoxItOptions li.selectboxit-option[data-val="01"]',
+    },
+    'month': {
+        '1': '#monthSelectBoxItOptions li.selectboxit-option[data-val="01"]',
+    },
+    'year': {
+        '1990': '#yearSelectBoxItOptions li.selectboxit-option[data-val="1990"]',
+    },
+    'menu': {
+        'link_mobiel': 'a[data-content="mobiel"]',
+        'link_sim_only':'#hover-menu a[href*="sim-only"]',
+    },
+    'mobile_provider': {
+        'tele2': '#yearSelectBoxItOptions li.selectboxit-option[data-val="TEL2"]',
+        'tele2_zakelijk':'#yearSelectBoxItOptions li.selectboxit-option[data-val="TL2Z"]',
+    },
+    'porting': {
+        'ja': '#keepnumberSelectBoxItOptions li.selectboxit-option[data-val="1"]',
+        'nee': '#keepnumberSelectBoxItOptions li.selectboxit-option[data-val="0"]',
+    },
+    'idtype': {
+        'pasport': '#identificationSelectBoxItOptions li.selectboxit-option[data-val="PASSPORT"]',
+        'idcart': '#identificationSelectBoxItOptions li.selectboxit-option[data-val="ID_CARD"]',
+        'drivers_licence': '#identificationSelectBoxItOptions li.selectboxit-option[data-val="DRIVERS_LICENSE"]',
+    },
+    'gender': {
+        'male': '#genderSelectBoxItOptions li.selectboxit-option[data-val="Male"]',
+        'female': '#genderSelectBoxItOptions li.selectboxit-option[data-val="Female"]',
+    },
+    'step_1': {
+        'button_next_step': '#btn_step_one',
+        'input_e-mail':'#e-mail',
+        'input_firstname': '#firstname',
+        'input_housenumber': '#house',
+        'input_initials': '#initials',
+        'input_lastname': '#lastname',
+        'input_phonenumber': '#telephone',
+        'input_postcode': '#postcode',
+        'input_repeat_email':'#repeat-email',
+        'input_street': '#street',
+        'select_gender': '#genderSelectBoxItText',
+        'select_day': '#daySelectBoxIt',
+        'select_month': '#monthSelectBoxIt',
+        'select_year': '#yearSelectBoxIt',
+    },
+    'step_2': {
+        'button_next_step': '#btn_step_two',
+        'input_bankaccount': '#bban',
+        'input_documentnumber': '#docnumber',
+        'input_IBANnumber': '#rekeningnummer',
+        'input_phonenumber': '#phone-number',
+        'input_simcard_number': '#sim-card-number',
+        'link_ibanlink': 'a.label-help',
+        'select_bank': '#bankSelectSelectBoxIt',
+        'select_current_subscription': '#type-of-subscriptionSelectBoxIt',
+        'select_idtype': '#identificationSelectBoxIt',
+        'select_mobile_provider': '#mobile-providerSelectBoxIt',
+        'select_porting': '#keepnumberSelectBoxIt',
+        'select_services': '#additional-servicesSelectBoxIt',
+    },
+}
+
+ERROR = {
+    'step_1': {
+        'DOB': {
+            'popup': '#yearSelectBoxItContainer ~ .popup.tooltip.error',
+            'text_popup': 'Helaas ben je nog geen 18 en mag je nog geen telefoon bestellen , misschien kun je je ouders vragen om een telefoon voor je te bestellen.',
+        },
+        'check_initials': {
+            '#initials.validation-passed',
+        },
+        'check_housenumber': {
+            '#housenumber.validation-passed',
+        },
+        'check_phonenumber': {
+            '#telephone.validation-passed',
+        },
+        'city': {
+            'mandatory': '#city.validation-failed',
+            'popup': '#city ~ .popup.tooltip.error',
+            'text_popup': 'Woonplaats is niet ingevuld',
+        },
+        'e-mail': {
+            'mandatory': '#e-mail.validation-failed',
+            'popup': '#e-mail ~ .popup.tooltip.error',
+            'text_popup': 'Zonder een correct e-mailadres kunnen we geen contact met je opnemen. Vul dus jouw correcte e-mail adres in',
+        },
+        'firstname': {
+            'mandatory': '#firstname.validation-failed',
+            'popup': '#firstname ~ .popup.tooltip.error',
+            'text_popup': 'Zoals vermeld op je legitimatiebewijs',
+        },
+        'gender': {
+            'popup': '#gender ~ .popup.tooltip.error',
+            'text_popup': 'Aanhef is niet ingevuld',
+        },
+        'housenumber': {
+            'mandatory': '#house.validation-failed',
+            'popup': '#house ~ .popup.tooltip.error',
+            'text_popup': 'Let op, alleen nummers zijn toegestaan.',
+        },
+        'initials': {
+            'mandatory': '#initials.validation-failed',
+            'popup': '#initials ~ .popup.tooltip.error',
+            'text_popup': 'Je bent je voorletters vergeten.',
+        },
+        'lastname': {
+            'mandatory': '#lastname.validation-failed',
+            'popup': '#lastname ~ .popup.tooltip.error',
+            'text_popup': 'Zoals vermeld op je legitimatiebewijs',
+        },
+        'phonenumber': {
+            'mandatory': '#telephone.validation-failed',
+            'popup': '#telephone ~ .popup.tooltip.error',
+            'text_popup': 'Zonder telefoonnummer kunnen we je natuurlijk niet bereiken. Vul de tien cijfers van je telefoonnummer in',
+        },
+        'postcode': {
+            'mandatory': '#postcode.validation-failed',
+            'popup': '#postcode ~ .popup.tooltip.error',
+            'text_popup': 'Typ de 4 cijfers en 2 letters van je postcode in: 1111AA',
+        },
+        'repeat_email': {
+            'mandatory': '#repeat-email.validation-failed',
+            'popup': '#repeat-email ~ .popup.tooltip.error',
+            'text_popup': 'Dit e-mailadres is niet hetzelfde als dat je hierboven hebt ingevuld. Typ hier hetzelfde e-mailadres als hierboven',
+        },
+        'streetname': {
+            'mandatory': '#street.validation-failed',
+            'popup': '#street ~ .popup.tooltip.error',
+            'text_popup': 'Straatnaam is niet ingevuld',
+        },
+    },
+    'step_2': {
+        'bankaccount': {
+            'mandatory': '#bban.validation-failed',
+            'popup': '#bban ~ .popup.tooltip.error',
+            'text_popup': 'Rekeningnummer komt niet overeen met je bank',        
+        },
+        'current_phonenumber': {
+            'mandatory': '#phone-number.validation-failed',
+            'popup': '#phone-number ~ .popup.tooltip.error',
+            'text_popup': 'Mobiel nummer is niet goed ingevuld (Voorbeeld: 0610000000).',
+        },
+        'current_subscription': {
+            'mandatory': '#type-of-subscription.validation-failed',
+            'popup': '#type-of-subscription ~ .popup.tooltip.error',
+            'text_popup': 'Huidige belvorm is niet gekozen.',        
+        },
+        'documentnumber': {
+            'mandatory': '#docnumber.validation-failed',
+            'popup': '#docnumber ~ .popup.tooltip.error',
+            'text_popup': 'Het legitimatienummer komt niet overeen met je type legitimatie.',        
+        },
+        'documenttype': {
+            'popup': '#identificationSelectBoxItContainer ~ .popup.tooltip.error',
+            'text_popup': 'Er is geen legitimatietype gekozen.',        
+        },
+        'IBANnumber': {
+            'mandatory': '#rekeningnummer.validation-failed',
+            'popup': '#rekeningnummer ~ .popup.tooltip.error',
+            'text_popup': 'Rekeningnummer komt niet overeen met je bank',        
+        },
+        'mobile_provider': {
+            'popup': '#mobile-provider ~ .popup.tooltip.error',
+            'text_popup': 'Huidige provider is niet gekozen.',        
+        },
+        'porting_date': {
+            'mandatory': '#porting-date.validation-failed',
+            'popup': '#porting-date ~ .popup.tooltip.error',
+            'text_popup': 'Overstapdatum is niet goed ingevuld',        
+        },
+        'simcard_number': {
+            'mandatory': '#sim-card-number.validation-failed',
+            'popup': '#sim-card-number ~ .popup.tooltip.error',
+            'text_popup': 'SIM-kaartnummer komt niet overeen met uw service provider.',        
+        },
+
+    }
+}
