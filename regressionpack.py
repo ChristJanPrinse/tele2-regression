@@ -264,9 +264,9 @@ class SimOnlyFieldValidation(Tele2Test):
 class Workflows(Tele2Test):
 
     def test_simonly_postpaid_noporting_delivery(self):
-        print "testcase id = %s" % unittest.TestCase.id()
-        print "testcase shortdescription = %s" % unittest.TestCase.ShortDescription()
-        
+        testcase = unittest.TestCase.id(self)
+        testcase = testcase.split('.')[2]
+        self.go_to_sim_only_step1()
 
 # collect the tests and run them
 if __name__ == "__main__":

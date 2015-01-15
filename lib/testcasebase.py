@@ -5,13 +5,13 @@ import imaplib
 import unittest
 import time
 import settings
+import os
 
+from datetime import datetime
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
-
 
 
 class Tele2Test(unittest.TestCase):
@@ -31,6 +31,7 @@ class Tele2Test(unittest.TestCase):
                 # check for the presence of the selector
                 self.driver.find_element_by_css_selector(settings.UI[part][selector]).send_keys(keys)
             except NoSuchElementException:
+                self.get_screenshot(part, selector)
                 # if no selector is found, spit out an error
                 self.fail("Tried to send %s into element %s but did not find it." % (keys, selector))
         elif click:
@@ -38,6 +39,7 @@ class Tele2Test(unittest.TestCase):
                 # check for the presence of the selector
                 self.driver.find_element_by_css_selector(settings.UI[part][selector]).click()
             except NoSuchElementException:
+                self.get_screenshot(part, selector)
                 # if no selector is found, spit out an error
                 self.fail("Tried to click element %s but did not find it." % selector)
         else:
@@ -45,15 +47,9 @@ class Tele2Test(unittest.TestCase):
                 # check for the presence of the selector
                 self.driver.find_element_by_css_selector(settings.UI[part][selector])
             except NoSuchElementException:
+                self.get_screenshot(part, selector)
                 # if no selector is found, spit out an error
                 self.fail("Expected to find element %s but did not find it." % selector)
-
-    def field_validation(self, part, selector, next_selector, entry, entry_type, error):
-        for key in entry[entry_type].split(','):
-            self.elementcheck(part, selector, keys=key)
-            self.elementcheck(part, next_selector, click=True)
-            self.errorcheck(part, error)
-            self.driver.find_element_by_css_selector(settings.UI[part][selector]).clear()
 
     def errorcheck(self, part, selector):
         if ('mandatory' in settings.ERROR[part][selector]):
@@ -67,6 +63,7 @@ class Tele2Test(unittest.TestCase):
                     time.sleep(0.5)
                     count -= 0.5
             else:
+                self.get_screenshot(part, selector)
                 # if no selector is found, spit out an error
                 self.fail("Expected to find mandatory error on  %s field but did not find it." % selector)
         if ('popup' in settings.ERROR[part][selector]):
@@ -80,14 +77,37 @@ class Tele2Test(unittest.TestCase):
                     time.sleep(0.5)
                     count -= 0.5
             else:
+                self.get_screenshot(part, selector)
                 # if no selector is found, spit out an error
                 self.fail("Expected to find mandatory popup on  %s field but did not find it." % selector)
         if ('text_popup' in settings.ERROR[part][selector]):
             element = self.driver.find_element_by_css_selector(settings.ERROR[part][selector]['popup'])
             if element.text != (settings.ERROR[part][selector]['text_popup']):
+                self.get_screenshot(part, selector)
                 self.fail("Expected to find text popup on  %s field but did not find it." % selector)
             else:
                 pass
+
+    def field_validation(self, part, selector, next_selector, entry, entry_type, error):
+        for key in entry[entry_type].split(','):
+            self.elementcheck(part, selector, keys=key)
+            self.elementcheck(part, next_selector, click=True)
+            self.errorcheck(part, error)
+            self.driver.find_element_by_css_selector(settings.UI[part][selector]).clear()
+
+    def get_screenshot(self, part, selector):
+        testcase = unittest.TestCase.id(self)
+        testcase = testcase.split('.')[2]
+        now = datetime.now()
+        date = '%s-%s-%s' % (now.month, now.day, now.year)
+        time = '%s;%s;%s' % (now.hour, now.minute, now.second)
+        newpath = 'C:\Users\j-rijnaars\Documents\screenshots\%s' % date
+        if not os.path.exists(newpath):
+           os.mkdir('C:\Users\j-rijnaars\Documents\screenshots\%s' % date)
+        newpath = 'C:\Users\j-rijnaars\Documents\screenshots\%s\%s' % (date, testcase)
+        if not os.path.exists(newpath):
+            os.mkdir('C:\Users\j-rijnaars\Documents\screenshots\%s\%s' % (date, testcase))
+        self.driver.get_screenshot_as_file('C:\Users\j-rijnaars\Documents\screenshots\%s\%s\%s %s time=%s.png' % (date, testcase, part, selector, time))
 
     def getactivationcode(email_account="automatedmailbox@gmail.com", email_password="Selenium123", email_folder="inbox"):
         def skipline(base, i=1):
