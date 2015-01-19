@@ -1,4 +1,5 @@
 from lib.testcasebase import Tele2Test, unittest, settings
+from selenium.common.exceptions import NoSuchElementException
 
 class SimOnlyFieldCorrection(Tele2Test):
 
@@ -264,7 +265,13 @@ class SimOnlyFieldValidation(Tele2Test):
 class Workflows(Tele2Test):
 
     def test_simonly_postpaid_noporting_delivery(self):
-        self.go_to_sim_only_step1()
+        self.cookiebar_accept()
+        try:
+            self.elementcheck('configure_page', 'button_order', click=True)
+        except NoSuchElementException:
+            self.elementcheck('homepage', 'button_banner', click=True)
+        self.elementcheck('configure_page', 'button_order', click=True)
+
 
 # collect the tests and run them
 if __name__ == "__main__":
