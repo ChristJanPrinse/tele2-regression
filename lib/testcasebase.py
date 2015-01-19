@@ -150,26 +150,26 @@ class Tele2Test(unittest.TestCase):
         self.dropdownselector_workflow(profile, 'configure_page', 'select_simcard', 'simcard_type', 'simcard')
         self.elementcheck('configure_page', 'button_order',click=True)
 
-    '''def go_to_sim_only_step1(self):
-        self.go_to_sim_only_configpage()
-        self.elementcheck('configure_page', 'button_order',click=True)'''
-
-    def go_to_sim_only_step2(self):
+    def go_to_sim_only_step2(self, profile='default'):
         self.go_to_sim_only_step1()
-        self.dropdownselector('step_1', 'select_gender', 'gender', 'male')
-        self.elementcheck('step_1', 'input_firstname',keys='test')
-        self.elementcheck('step_1', 'input_lastname',keys='test')
-        self.elementcheck('step_1', 'input_initials',keys='t')
-        self.dropdownselector('step_1', 'select_day', 'day', '1')
-        self.dropdownselector('step_1', 'select_month', 'month', '1')
-        self.dropdownselector('step_1', 'select_year', 'year', '1990')
-        self.elementcheck('step_1', 'input_postcode',keys='5331XW')
-        self.elementcheck('step_1', 'input_housenumber',keys='7')
-        self.elementcheck('step_1', 'input_phonenumber',keys='0612345678')
-        self.elementcheck('step_1', 'input_e-mail',keys='test@test.nl')
-        self.elementcheck('step_1', 'input_repeat_email',keys='test@test.nl')
-        time.sleep(5)
+        self.dropdownselector_workflow(profile, 'step_1', 'select_gender', 'gender', 'gender')
+        self.elementcheck('step_1', 'input_firstname',keys=settings.PROFILES[profile]['firstname'])
+        self.elementcheck('step_1', 'input_lastname',keys=settings.PROFILES[profile]['lastname'])
+        self.elementcheck('step_1', 'input_initials',keys=settings.PROFILES[profile]['initials'])
+        self.dropdownselector_workflow(profile, 'step_1', 'select_day', 'day', 'day')
+        self.dropdownselector_workflow(profile, 'step_1', 'select_month', 'month', 'month')
+        self.dropdownselector_workflow(profile, 'step_1', 'select_year', 'year', 'year')
+        self.elementcheck('step_1', 'input_postcode',keys=settings.PROFILES[profile]['postcode'])
+        self.elementcheck('step_1', 'input_housenumber',keys=settings.PROFILES[profile]['housenumber'])
+        self.elementcheck('step_1', 'input_phonenumber',keys=settings.PROFILES[profile]['phonenumber'])
+        self.elementcheck('step_1', 'input_e-mail',keys=settings.PROFILES[profile]['email'])
+        self.elementcheck('step_1', 'input_repeat_email',keys=settings.PROFILES[profile]['repeat_email'])
+        while not (self.driver.find_element_by_css_selector('#street[placeholder=""]')):
+            time.sleep(0.1)
         self.elementcheck('step_1', 'button_next_step', click=True)
+
+    def go_to_sim_only_step3(self, profile='default'):
+        self.go_to_sim_only_step2(profile)
 
     def hover (self, part, selector):
         locator = settings.UI[part][selector]
