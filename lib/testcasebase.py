@@ -25,6 +25,10 @@ class Tele2Test(unittest.TestCase):
         self.elementcheck(part, selector, click=True)
         self.elementcheck(entry, entry_type, click=True)
 
+    def dropdownselector_workflow(self, profile, part, selector, entry, entry_type):
+        self.elementcheck(part, selector, click=True)
+        self.elementcheck(entry, settings.PROFILES[profile][entry_type], click=True)
+
     def elementcheck(self, part, selector, keys='', click=False):
         if keys:
             try:
@@ -132,9 +136,23 @@ class Tele2Test(unittest.TestCase):
         self.hover('menu', 'link_mobiel')
         self.elementcheck('menu', 'link_sim_only',click=True)
 
-    def go_to_sim_only_step1(self):
+    def go_to_sim_only_step1(self, profile='default'):
         self.go_to_sim_only_configpage()
+        #   workaround a-b testing
+        try:
+            self.driver.find_element_by_css_selector(settings.UI['configure_page']['button_order'])
+        except NoSuchElementException:
+            self.elementcheck('homepage', 'button_banner', click=True)
+        #   select internet bundle
+        self.dropdownselector_workflow(profile, 'configure_page', 'select_internetbundle', 'bundles', 'internetbundle')
+        #   self.driver.find_element_by_css_selector('.cart-container-title').click()
+        self.dropdownselector_workflow(profile, 'configure_page', 'select_belbundle', 'bundles', 'belbundle')
+        self.dropdownselector_workflow(profile, 'configure_page', 'select_simcard', 'simcard_type', 'simcard')
         self.elementcheck('configure_page', 'button_order',click=True)
+
+    '''def go_to_sim_only_step1(self):
+        self.go_to_sim_only_configpage()
+        self.elementcheck('configure_page', 'button_order',click=True)'''
 
     def go_to_sim_only_step2(self):
         self.go_to_sim_only_step1()

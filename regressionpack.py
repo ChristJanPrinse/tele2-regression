@@ -264,13 +264,8 @@ class SimOnlyFieldValidation(Tele2Test):
 
 class Workflows(Tele2Test):
 
-    def test_simonly_postpaid_noporting_delivery(self):
-        self.cookiebar_accept()
-        try:
-            self.elementcheck('configure_page', 'button_order', click=True)
-        except NoSuchElementException:
-            self.elementcheck('homepage', 'button_banner', click=True)
-        self.elementcheck('configure_page', 'button_order', click=True)
+    def test_simonly_postpaid_noporting_delivery(self, profile='default'):
+        self.go_to_sim_only_step1(profile)
 
 
 # collect the tests and run them

@@ -6,9 +6,22 @@ UI = {
         'ing': '#bankSelectSelectBoxItOptions li.selectboxit-option[data-val="ing-bank"]',
         'abn_amro': '#bankSelectSelectBoxItOptions li.selectboxit-option[data-val="abn-amro"]',
     },
+    'bundles': {
+        '100MB': '.selectboxit-option[data-name="100"]',
+        '500MB': '.selectboxit-option[data-name="500"]',
+        '1000MB': '.selectboxit-option[data-name="1000"]',
+        '2000MB': '.selectboxit-option[data-name="2000"]',
+        '4000MB': '.selectboxit-option[data-name="4000"]',
+        '150bel/sms': '.selectboxit-option[data-name="150"]',
+        '300bel/sms': '.selectboxit-option[data-name="300"]',
+        'onbeperktbel/sms': '.selectboxit-option[data-name="Onbeperkt"]',
+    },
     'configure_page': {
         'button_order': 'a.add-cart.button',
         'cookie': '#buttonAccept',
+        'select_belbundle': '#voice-subscription-listSelectBoxIt',
+        'select_internetbundle': '#data-subscription-listSelectBoxItText',
+        'select_simcard': '#sim-subscription-listSelectBoxIt',
     },
     'current_subscription': {
         'prepaid': '#type-of-subscriptionSelectBoxItOptions li.selectboxit-option[data-val="1"]',
@@ -77,6 +90,10 @@ UI = {
         'select_mobile_provider': '#mobile-providerSelectBoxIt',
         'select_porting': '#keepnumberSelectBoxIt',
         'select_services': '#additional-servicesSelectBoxIt',
+    },
+    'simcard_type': {
+        'standaard': '.selectboxit-option[data-simname="Standaard- & Micro SIM"]',
+        'nano': '.selectboxit-option[data-simname="Nano SIM"]',
     },
 }
 
