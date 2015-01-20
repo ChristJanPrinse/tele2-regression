@@ -20,7 +20,7 @@ UI = {
         'button_order': 'a.add-cart.button',
         'cookie': '#buttonAccept',
         'select_belbundle': '#voice-subscription-listSelectBoxIt',
-        'select_internetbundle': '#data-subscription-listSelectBoxItText',
+        'select_internetbundle': '#data-subscription-listSelectBoxIt',
         'select_simcard': '#sim-subscription-listSelectBoxIt',
     },
     'current_subscription': {
@@ -75,7 +75,7 @@ UI = {
         'input_postcode': '#postcode',
         'input_repeat_email':'#repeat-email',
         'input_street': '#street',
-        'select_gender': '#genderSelectBoxItText',
+        'select_gender': 'select#gender',
         'select_day': '#daySelectBoxIt',
         'select_month': '#monthSelectBoxIt',
         'select_year': '#yearSelectBoxIt',
@@ -90,14 +90,20 @@ UI = {
         'link_ibanlink': 'a.label-help',
         'select_bank': '#bankSelectSelectBoxIt',
         'select_current_subscription': '#type-of-subscriptionSelectBoxIt',
-        'select_idtype': '#identificationSelectBoxIt',
+        'select_idtype': '#identification',
         'select_mobile_provider': '#mobile-providerSelectBoxIt',
         'select_porting': '#keepnumberSelectBoxIt',
         'select_services': '#additional-servicesSelectBoxIt',
     },
     'step_3': {
+        'button_next_step': '#btn_step_three',
         'ratio_delivery': '.request-delivery',
-        'ratio_click&collect': '.pick-point',
+        'ratio_click_collect': '.pick-point',
+        'terms': '#terms-one-link',
+        'directdebid': '#terms-two-link',
+    },
+    'step_4': {
+        'lastpage': '#stepFour',
     },
     'simcard_type': {
         'standaard': '.selectboxit-option[data-simname="Standaard- & Micro SIM"]',
@@ -221,4 +227,16 @@ ERROR = {
         },
 
     }
+}
+
+TEXT = {
+    'postpaid': {
+        'simonly': {
+            'porting': {
+                'click_and_collect':{
+                    'text_1': 'We hebben je bestelling goed ontvangen!',
+                },
+            },
+        },
+    },
 }

@@ -92,33 +92,33 @@ class SimOnlyFieldMandatory(Tele2Test):
         self.elementcheck('step_2', 'button_next_step', click=True)
         self.errorcheck('step_2', 'documentnumber')
 
-    def test_current_subscription_mandatory(self):
+    def test_current_subscription_mandatory(self, profile='porting_mandatory'):
         self.go_to_sim_only_step2()
-        self.dropdownselector('step_2', 'select_porting', 'porting', 'ja')
+        self.dropdownselector(profile, 'step_2', 'select_porting', 'porting', 'porting')
         self.elementcheck('step_2', 'button_next_step', click=True)
         self.errorcheck('step_2', 'current_subscription')
 
-    def test_current_phonenumber_mandatory(self):
+    def test_current_phonenumber_mandatory(self, profile='porting_mandatory'):
         self.go_to_sim_only_step2()
-        self.dropdownselector('step_2', 'select_porting', 'porting', 'ja')
+        self.dropdownselector(profile, 'step_2', 'select_porting', 'porting', 'porting')
         self.elementcheck('step_2', 'button_next_step', click=True)
         self.errorcheck('step_2', 'current_phonenumber')
 
-    def test_current_mobile_provider_mandatory(self):
+    def test_current_mobile_provider_mandatory(self, profile='porting_mandatory'):
         self.go_to_sim_only_step2()
-        self.dropdownselector('step_2', 'select_porting', 'porting', 'ja')
+        self.dropdownselector(profile, 'step_2', 'select_porting', 'porting', 'porting')
         self.elementcheck('step_2', 'button_next_step', click=True)
         self.errorcheck('step_2', 'mobile_provider')
 
-    def test_current_simcard_number_mandatory(self):
+    def test_current_simcard_number_mandatory(self, profile='porting_mandatory'):
         self.go_to_sim_only_step2()
-        self.dropdownselector('step_2', 'select_porting', 'porting', 'ja')
+        self.dropdownselector(profile, 'step_2', 'select_porting', 'porting', 'porting')
         self.elementcheck('step_2', 'button_next_step', click=True)
         self.errorcheck('step_2', 'simcard_number')
 
-    def test_current_portingdate_mandatory(self):
+    def test_current_portingdate_mandatory(self, profile='porting_mandatory'):
         self.go_to_sim_only_step2()
-        self.dropdownselector('step_2', 'select_porting', 'porting', 'ja')
+        self.dropdownselector(profile, 'step_2', 'select_porting', 'porting', 'porting')
         self.elementcheck('step_2', 'button_next_step', click=True)
         self.errorcheck('step_2', 'porting_date')
 
@@ -169,7 +169,11 @@ class Workflows(Tele2Test):
 
     def test_simonly_postpaid_noporting_delivery(self, profile='default'):
         self.go_to_sim_only_step4(profile)
-
+        self.elementcheck('step_4', 'lastpage')
+        text = 'We hebben je bestelling goed ontvangen!'
+        huidige_text = self.driver.find_element_by_css_selector('div#stepFour li.odd')
+        print huidige_text.text
+        self.assertEqual(text, huidige_text.text)
 
 # collect the tests and run them
 if __name__ == "__main__":

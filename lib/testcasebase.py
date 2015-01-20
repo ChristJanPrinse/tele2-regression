@@ -12,6 +12,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.support.ui import Select
 
 
 class Tele2Test(unittest.TestCase):
@@ -21,13 +22,13 @@ class Tele2Test(unittest.TestCase):
         self.driver.find_element_by_css_selector('#buttonAccept').click()
         self.driver.switch_to_default_content()
 
-    def dropdownselector(self, part, selector, entry, entry_type):
-        self.elementcheck(part, selector, click=True)
-        self.elementcheck(entry, entry_type, click=True)
-
-    def dropdownselector_workflow(self, profile, part, selector, entry, entry_type):
+    def dropdownselector(self, profile, part, selector, entry, entry_type):
         self.elementcheck(part, selector, click=True)
         self.elementcheck(entry, settings.PROFILES[profile][entry_type], click=True)
+
+    def dropdownselector_select(self, profile, part, selector, entry):
+        select = Select(self.driver.find_element_by_css_selector(settings.UI[part][selector]))
+        select.select_by_value(settings.PROFILES[profile][entry])
 
     def elementcheck(self, part, selector, keys='', click=False):
         if keys:
@@ -144,21 +145,20 @@ class Tele2Test(unittest.TestCase):
         except NoSuchElementException:
             self.elementcheck('homepage', 'button_banner', click=True)
         #   select internet bundle
-        self.dropdownselector_workflow(profile, 'configure_page', 'select_internetbundle', 'bundles', 'internetbundle')
-        #   self.driver.find_element_by_css_selector('.cart-container-title').click()
-        self.dropdownselector_workflow(profile, 'configure_page', 'select_belbundle', 'bundles', 'belbundle')
-        self.dropdownselector_workflow(profile, 'configure_page', 'select_simcard', 'simcard_type', 'simcard')
+        self.dropdownselector(profile, 'configure_page', 'select_internetbundle', 'bundles', 'internetbundle')
+        self.dropdownselector(profile, 'configure_page', 'select_belbundle', 'bundles', 'belbundle')
+        self.dropdownselector(profile, 'configure_page', 'select_simcard','simcard_type', 'simcard')
         self.elementcheck('configure_page', 'button_order',click=True)
 
     def go_to_sim_only_step2(self, profile='default'):
         self.go_to_sim_only_step1()
-        self.dropdownselector_workflow(profile, 'step_1', 'select_gender', 'gender', 'gender')
+        self.dropdownselector_select(profile, 'step_1', 'select_gender', 'gender')
         self.elementcheck('step_1', 'input_firstname',keys=settings.PROFILES[profile]['firstname'])
         self.elementcheck('step_1', 'input_lastname',keys=settings.PROFILES[profile]['lastname'])
         self.elementcheck('step_1', 'input_initials',keys=settings.PROFILES[profile]['initials'])
-        self.dropdownselector_workflow(profile, 'step_1', 'select_day', 'day', 'day')
-        self.dropdownselector_workflow(profile, 'step_1', 'select_month', 'month', 'month')
-        self.dropdownselector_workflow(profile, 'step_1', 'select_year', 'year', 'year')
+        self.dropdownselector(profile, 'step_1', 'select_day', 'day', 'day')
+        self.dropdownselector(profile, 'step_1', 'select_month', 'month', 'month')
+        self.dropdownselector(profile, 'step_1', 'select_year', 'year', 'year')
         self.elementcheck('step_1', 'input_postcode',keys=settings.PROFILES[profile]['postcode'])
         self.elementcheck('step_1', 'input_housenumber',keys=settings.PROFILES[profile]['housenumber'])
         self.elementcheck('step_1', 'input_phonenumber',keys=settings.PROFILES[profile]['phonenumber'])
@@ -171,15 +171,21 @@ class Tele2Test(unittest.TestCase):
     def go_to_sim_only_step3(self, profile='default'):
         self.go_to_sim_only_step2(profile)
         self.elementcheck('step_2', 'input_IBANnumber',keys=settings.PROFILES[profile]['IBAN_number'])
-        self.dropdownselector_workflow(profile, 'step_2', 'select_idtype', 'idtype', 'idtype')              
+        self.dropdownselector_select(profile, 'step_2', 'select_idtype', 'document_type')              
         self.elementcheck('step_2', 'input_documentnumber',keys=settings.PROFILES[profile]['document_number'])
-        self.dropdownselector_workflow(profile, 'step_2', 'select_porting', 'porting', 'porting')              
-        self.dropdownselector_workflow(profile, 'step_2', 'select_services', 'services', 'services')              
+        self.dropdownselector(profile, 'step_2', 'select_porting', 'porting', 'porting')              
+        self.dropdownselector(profile, 'step_2', 'select_services', 'services', 'services')              
         self.elementcheck('step_2', 'button_next_step', click=True)
 
     def go_to_sim_only_step4(self, profile='default'):
         self.go_to_sim_only_step3(profile)
-        self.elementcheck('step_3', 'ratio_delivery', click=settings.PROFILES[profile]['delivery'])
+        if (settings.PROFILES[profile]['delivery']):
+            self.elementcheck('step_3', 'ratio_delivery', click=settings.PROFILES[profile]['delivery'])
+        if (settings.PROFILES[profile]['click_collect']):
+            self.elementcheck('step_3', 'ratio_click_collect', click=settings.PROFILES[profile]['click_collect'])
+        self.elementcheck('step_3', 'terms', click=True)
+        self.elementcheck('step_3', 'directdebid', click=True)
+        self.elementcheck('step_3', 'button_next_step', click=True)
 
     def hover (self, part, selector):
         locator = settings.UI[part][selector]
@@ -192,7 +198,7 @@ class Tele2Test(unittest.TestCase):
         self.driver = webdriver.Remote(
             command_executor="http://127.0.0.1:4444/wd/hub",
             desired_capabilities=DesiredCapabilities.FIREFOX)
-        self.driver.implicitly_wait(5)
+        self.driver.implicitly_wait(10)
         self.driver.set_window_size(1250,1000)
  
         #   navigate to URL and log in as developer (since the script creates a new instance with clean cache)
