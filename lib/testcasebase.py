@@ -170,6 +170,16 @@ class Tele2Test(unittest.TestCase):
 
     def go_to_sim_only_step3(self, profile='default'):
         self.go_to_sim_only_step2(profile)
+        self.elementcheck('step_2', 'input_IBANnumber',keys=settings.PROFILES[profile]['IBAN_number'])
+        self.dropdownselector_workflow(profile, 'step_2', 'select_idtype', 'idtype', 'idtype')              
+        self.elementcheck('step_2', 'input_documentnumber',keys=settings.PROFILES[profile]['document_number'])
+        self.dropdownselector_workflow(profile, 'step_2', 'select_porting', 'porting', 'porting')              
+        self.dropdownselector_workflow(profile, 'step_2', 'select_services', 'services', 'services')              
+        self.elementcheck('step_2', 'button_next_step', click=True)
+
+    def go_to_sim_only_step4(self, profile='default'):
+        self.go_to_sim_only_step3(profile)
+        self.elementcheck('step_3', 'ratio_delivery', click=settings.PROFILES[profile]['delivery'])
 
     def hover (self, part, selector):
         locator = settings.UI[part][selector]

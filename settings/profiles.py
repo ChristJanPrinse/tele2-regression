@@ -15,5 +15,12 @@ PROFILES = {
         'phonenumber': '0612345678',
         'email': 'test@test.nl',
         'repeat_email': 'test@test.nl',
+        'idtype': 'drivers_licence',
+        'IBAN_number': 'NL20INGB0001234567',
+        'document_number': '3131313131',
+        'porting': 'nee',
+        'services': 'standaardinstellingen',
+        'click&collect': False,
+        'delivery': True,
     }
 }

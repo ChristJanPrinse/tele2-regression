@@ -60,6 +60,10 @@ UI = {
         'male': '#genderSelectBoxItOptions li.selectboxit-option[data-val="Male"]',
         'female': '#genderSelectBoxItOptions li.selectboxit-option[data-val="Female"]',
     },
+    'services': {
+        'standaardinstellingen': 'li.selectboxit-option[data-val="defaults"]',
+        'aangepasteinstellingen': 'li.selectboxit-option[data-val="manual"]',
+    },
     'step_1': {
         'button_next_step': '#btn_step_one',
         'input_e-mail':'#e-mail',
@@ -90,6 +94,10 @@ UI = {
         'select_mobile_provider': '#mobile-providerSelectBoxIt',
         'select_porting': '#keepnumberSelectBoxIt',
         'select_services': '#additional-servicesSelectBoxIt',
+    },
+    'step_3': {
+        'ratio_delivery': '.request-delivery',
+        'ratio_click&collect': '.pick-point',
     },
     'simcard_type': {
         'standaard': '.selectboxit-option[data-simname="Standaard- & Micro SIM"]',
