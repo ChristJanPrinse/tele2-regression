@@ -167,13 +167,21 @@ class SimOnlyFieldValidation(Tele2Test):
 
 class Workflows(Tele2Test):
 
-    def test_simonly_postpaid_noporting_delivery(self, profile='default'):
+    def test_simonly_postpaid_noporting_delivery(self, profile='simonly_postpaid_noporting_delivery'):
         self.go_to_sim_only_step4(profile)
         self.elementcheck('step_4', 'lastpage')
-        text = 'We hebben je bestelling goed ontvangen!'
-        huidige_text = self.driver.find_element_by_css_selector('div#stepFour li.odd')
-        print huidige_text.text
-        self.assertEqual(text, huidige_text.text)
+
+    def test_simonly_postpaid_porting_delivery(self, profile='simonly_postpaid_porting_delivery'):
+        self.go_to_sim_only_step4(profile)
+        self.elementcheck('step_4', 'lastpage')
+
+    def test_simonly_postpaid_noporting_clickandcollect(self, profile='simonly_postpaid_noporting_clickandcollect'):
+        self.go_to_sim_only_step4(profile)
+        self.elementcheck('step_4', 'lastpage')
+
+    def test_simonly_postpaid_porting_clickandcollect(self, profile='simonly_postpaid_porting_clickandcollect'):
+        self.go_to_sim_only_step4(profile)
+        self.elementcheck('step_4', 'lastpage')
 
 # collect the tests and run them
 if __name__ == "__main__":

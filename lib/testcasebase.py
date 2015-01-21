@@ -173,7 +173,15 @@ class Tele2Test(unittest.TestCase):
         self.elementcheck('step_2', 'input_IBANnumber',keys=settings.PROFILES[profile]['IBAN_number'])
         self.dropdownselector_select(profile, 'step_2', 'select_idtype', 'document_type')              
         self.elementcheck('step_2', 'input_documentnumber',keys=settings.PROFILES[profile]['document_number'])
-        self.dropdownselector(profile, 'step_2', 'select_porting', 'porting', 'porting')              
+        self.dropdownselector(profile, 'step_2', 'select_porting', 'porting', 'porting')
+        if settings.PROFILES[profile]['porting'] == 'ja':
+            self.elementcheck('step_2', 'input_phonenumber',keys=settings.PROFILES[profile]['current_phonenumber'])
+            self.dropdownselector(profile, 'step_2', 'select_current_subscription', 'current_subscription', 'current_subscriber')
+            self.dropdownselector(profile, 'step_2', 'select_mobile_provider', 'mobile_provider', 'current_provider')
+            self.elementcheck('step_2', 'input_simcard_number',keys=settings.PROFILES[profile]['current_simcardnumber'])
+            self.elementcheck('step_2', 'select_date', click=True)
+            self.elementcheck('step_2', 'select_day', click=True)
+            self.get_screenshot('TEST', 'TEST')        
         self.dropdownselector(profile, 'step_2', 'select_services', 'services', 'services')              
         self.elementcheck('step_2', 'button_next_step', click=True)
 
@@ -186,6 +194,7 @@ class Tele2Test(unittest.TestCase):
         self.elementcheck('step_3', 'terms', click=True)
         self.elementcheck('step_3', 'directdebid', click=True)
         self.elementcheck('step_3', 'button_next_step', click=True)
+        self.get_screenshot('step_3', 'final')        
 
     def hover (self, part, selector):
         locator = settings.UI[part][selector]

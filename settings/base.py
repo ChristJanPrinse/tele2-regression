@@ -25,7 +25,7 @@ UI = {
     },
     'current_subscription': {
         'prepaid': '#type-of-subscriptionSelectBoxItOptions li.selectboxit-option[data-val="1"]',
-        'poatpaid': '#type-of-subscriptionSelectBoxItOptions li.selectboxit-option[data-val="2"]',
+        'postpaid': '#type-of-subscriptionSelectBoxItOptions li.selectboxit-option[data-val="2"]',
     },
     'day': {
         '1': '#daySelectBoxItOptions li.selectboxit-option[data-val="01"]',
@@ -44,8 +44,9 @@ UI = {
         'link_sim_only':'#hover-menu a[href*="sim-only"]',
     },
     'mobile_provider': {
-        'tele2': '#yearSelectBoxItOptions li.selectboxit-option[data-val="TEL2"]',
-        'tele2_zakelijk':'#yearSelectBoxItOptions li.selectboxit-option[data-val="TL2Z"]',
+        'tele2': '#mobile-providerSelectBoxItOptions li.selectboxit-option[data-val="TEL2"]',
+        'tele2_zakelijk':'#mobile-providerSelectBoxItOptions li.selectboxit-option[data-val="TL2Z"]',
+        'KPN':'#mobile-providerSelectBoxItOptions li.selectboxit-option[data-val="SPM"]',
     },
     'porting': {
         'ja': '#keepnumberSelectBoxItOptions li.selectboxit-option[data-val="1"]',
@@ -90,6 +91,8 @@ UI = {
         'link_ibanlink': 'a.label-help',
         'select_bank': '#bankSelectSelectBoxIt',
         'select_current_subscription': '#type-of-subscriptionSelectBoxIt',
+        'select_date': '#porting-date',
+        'select_day': '.ui-datepicker-days-cell-over',
         'select_idtype': '#identification',
         'select_mobile_provider': '#mobile-providerSelectBoxIt',
         'select_porting': '#keepnumberSelectBoxIt',
