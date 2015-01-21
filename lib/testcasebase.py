@@ -9,7 +9,10 @@ import os
 
 from datetime import datetime
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import Select
@@ -164,8 +167,15 @@ class Tele2Test(unittest.TestCase):
         self.elementcheck('step_1', 'input_phonenumber',keys=settings.PROFILES[profile]['phonenumber'])
         self.elementcheck('step_1', 'input_e-mail',keys=settings.PROFILES[profile]['email'])
         self.elementcheck('step_1', 'input_repeat_email',keys=settings.PROFILES[profile]['repeat_email'])
-        while not (self.driver.find_element_by_css_selector('#street[placeholder=""]')):
-            time.sleep(0.1)
+        count = 0
+        while not (self.driver.find_element_by_css_selector('#street').get_attribute("value") == 'Surinamestraat') :
+            if count >= 50:
+                self.get_screenshot('step_1', 'input_street')
+                # if no selector is found, spit out an error
+                self.fail('finding the adress took longer then 5 seconds')
+            else:
+                time.sleep(0.1)
+                count += 1
         self.elementcheck('step_1', 'button_next_step', click=True)
 
     def go_to_sim_only_step3(self, profile='default'):
@@ -181,7 +191,6 @@ class Tele2Test(unittest.TestCase):
             self.elementcheck('step_2', 'input_simcard_number',keys=settings.PROFILES[profile]['current_simcardnumber'])
             self.elementcheck('step_2', 'select_date', click=True)
             self.elementcheck('step_2', 'select_day', click=True)
-            self.get_screenshot('TEST', 'TEST')        
         self.dropdownselector(profile, 'step_2', 'select_services', 'services', 'services')              
         self.elementcheck('step_2', 'button_next_step', click=True)
 
@@ -191,10 +200,20 @@ class Tele2Test(unittest.TestCase):
             self.elementcheck('step_3', 'ratio_delivery', click=settings.PROFILES[profile]['delivery'])
         if (settings.PROFILES[profile]['click_collect']):
             self.elementcheck('step_3', 'ratio_click_collect', click=settings.PROFILES[profile]['click_collect'])
+        count = 0
+        clickandcollect = self.driver.find_element_by_css_selector('.shop-name').text.split()[0]
+        while not (clickandcollect == 'dixons') :
+            if count >= 50:
+                self.get_screenshot('step_3', 'no dixons')
+                # if no selector is found, spit out an error
+                self.fail('finding the nearest dixons took longer then 5 seconds')
+            else:
+                time.sleep(0.1)
+                clickandcollect = self.driver.find_element_by_css_selector('.shop-name').text.split()[0]
+                count += 1
         self.elementcheck('step_3', 'terms', click=True)
         self.elementcheck('step_3', 'directdebid', click=True)
         self.elementcheck('step_3', 'button_next_step', click=True)
-        self.get_screenshot('step_3', 'final')        
 
     def hover (self, part, selector):
         locator = settings.UI[part][selector]
