@@ -160,12 +160,12 @@ class SimOnlyFieldValidation(Tele2Test):
         self.go_to_sim_only_step2()
         self.field_validation('step_2', 'input_IBANnumber', 'select_services', settings.IBAN, 'incorrect', 'IBANnumber')
 
-    def test_document_number_incorrect(self):
+    def test_document_number_incorrect(self, profile='default'):
         self.go_to_sim_only_step2()
-        self.dropdownselector('step_2', 'select_idtype', 'idtype', 'drivers_licence')
+        self.dropdownselector_select(profile, 'step_2', 'select_idtype', 'document_type')              
         self.field_validation('step_2', 'input_documentnumber', 'select_idtype', settings.DRIVERSLICENCE, 'incorrect', 'documentnumber')
 
-class Workflows(Tele2Test):
+class SimOnlyWorkflows(Tele2Test):
 
     def test_simonly_postpaid_noporting_delivery(self, profile='simonly_postpaid_noporting_delivery'):
         self.go_to_sim_only_step4(profile)

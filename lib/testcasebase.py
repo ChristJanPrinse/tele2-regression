@@ -8,6 +8,7 @@ import settings
 import os
 
 from datetime import datetime
+from random import randint
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
@@ -17,8 +18,63 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import Select
 
+class Extensions(object):
 
-class Tele2Test(unittest.TestCase):
+    def create_account_number(self, ID):
+        def create_number(account):
+            account_number = []
+            count = 0
+            while count <= account:
+                account_number.append(randint(1, 9))
+                count += 1
+            return account_number
+        def multiply_by_eleven(amount_digits):
+            global account_number
+            account_number = create_number(amount_digits)
+            multiplied_number = 0
+            multiply = amount_digits + 1
+            for num in account_number:
+                multiplied_number += num * multiply
+                multiply -= 1
+            return multiplied_number
+        def sum_eleven(amount_digits):
+            multiplied_number = multiply_by_eleven(amount_digits)
+            eleven_modulo_outcome = multiplied_number % 11
+            return eleven_modulo_outcome
+        def eleven_check(amount_digits, indicator= False):
+            while indicator == False:
+                eleven_modulo_outcome = sum_eleven(amount_digits)
+                if eleven_modulo_outcome == 0:
+                    return account_number
+                    break
+        if ID == "rijbewijs":
+            amount_digits = 9
+            eleven_check(amount_digits)
+            return ''.join(str(x) for x in account_number)
+        elif ID == 'bankaccount':
+            amount_digits = 8
+            eleven_check(amount_digits)
+            return ''.join(str(x) for x in account_number)
+
+    def getactivationcode(email_account="automatedmailbox@gmail.com", email_password="Selenium123", email_folder="inbox"):
+        def skipline(base, i=1):
+            return '\n'.join(base.split('\n')[i:])
+        M = imaplib.IMAP4_SSL('imap.gmail.com')
+        rv, data = M.login(email_account, email_password)
+        rv, mailboxes = M.list()
+        rv, data = M.select(email_folder) 
+        rv, data = M.search(None, "ALL")
+        for num in data[0].split():
+            rv, data = M.fetch(num, '(RFC822)')
+            msg = email.message_from_string(data[0][1])
+            for part in email.iterators.typed_subpart_iterator(msg, 'text', 'html'): 
+                html = base64.b64decode(skipline(str(part), 4))
+                html = html[html.index("activate=")+9:]
+                return html[:html.index('\"')]
+        M.close()
+        M.logout()
+
+class Tele2Test(Extensions, unittest.TestCase):
 
     def cookiebar_accept(self):
         self.driver.switch_to_frame(self.driver.find_element_by_css_selector("#qb_cookie_consent_main"))       
@@ -117,24 +173,6 @@ class Tele2Test(unittest.TestCase):
             os.mkdir('C:\Users\j-rijnaars\Documents\screenshots\%s\%s' % (date, testcase))
         self.driver.get_screenshot_as_file('C:\Users\j-rijnaars\Documents\screenshots\%s\%s\%s %s time=%s.png' % (date, testcase, part, selector, time))
 
-    def getactivationcode(email_account="automatedmailbox@gmail.com", email_password="Selenium123", email_folder="inbox"):
-        def skipline(base, i=1):
-            return '\n'.join(base.split('\n')[i:])
-        M = imaplib.IMAP4_SSL('imap.gmail.com')
-        rv, data = M.login(email_account, email_password)
-        rv, mailboxes = M.list()
-        rv, data = M.select(email_folder) 
-        rv, data = M.search(None, "ALL")
-        for num in data[0].split():
-            rv, data = M.fetch(num, '(RFC822)')
-            msg = email.message_from_string(data[0][1])
-            for part in email.iterators.typed_subpart_iterator(msg, 'text', 'html'): 
-                html = base64.b64decode(skipline(str(part), 4))
-                html = html[html.index("activate=")+9:]
-                return html[:html.index('\"')]
-        M.close()
-        M.logout()
-
     def go_to_sim_only_configpage(self):
         self.cookiebar_accept()
         self.hover('menu', 'link_mobiel')
@@ -168,6 +206,7 @@ class Tele2Test(unittest.TestCase):
         self.elementcheck('step_1', 'input_e-mail',keys=settings.PROFILES[profile]['email'])
         self.elementcheck('step_1', 'input_repeat_email',keys=settings.PROFILES[profile]['repeat_email'])
         count = 0
+        street = settings.PROFILES[profile]['streetname']
         while not (self.driver.find_element_by_css_selector('#street').get_attribute("value") == 'Surinamestraat') :
             if count >= 50:
                 self.get_screenshot('step_1', 'input_street')
