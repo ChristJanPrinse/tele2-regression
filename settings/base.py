@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+import settings
 
 UI = {
     'bank': {
@@ -42,6 +43,7 @@ UI = {
     'menu': {
         'link_mobiel': 'a[data-content="mobiel"]',
         'link_sim_only':'#hover-menu a[href*="sim-only"]',
+        'link_handset':'#hover-menu a[href*="smartphones"]',
     },
     'mobile_provider': {
         'tele2': '#mobile-providerSelectBoxItOptions li.selectboxit-option[data-val="TEL2"]',
@@ -111,6 +113,9 @@ UI = {
     'simcard_type': {
         'standaard': '.selectboxit-option[data-simname="Standaard- & Micro SIM"]',
         'nano': '.selectboxit-option[data-simname="Nano SIM"]',
+    },
+    'overview_page': {
+        'handset': '.default-state img.fld_image[title*="Samsung Galaxy S5 abonnement"]',
     },
 }
 
@@ -217,6 +222,11 @@ ERROR = {
         'mobile_provider': {
             'popup': '#mobile-provider ~ .popup.tooltip.error',
             'text_popup': 'Huidige provider is niet gekozen.',        
+        },
+        'phonenumber': {
+            'mandatory': '#phone-number.validation-failed',
+            'popup': '#phone-number ~ .popup.tooltip.error',
+            'text_popup': 'Mobiel nummer is niet goed ingevuld (Voorbeeld: 0610000000).',
         },
         'porting_date': {
             'mandatory': '#porting-date.validation-failed',

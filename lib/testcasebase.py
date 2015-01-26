@@ -173,13 +173,21 @@ class Tele2Test(Extensions, unittest.TestCase):
             os.mkdir('C:\Users\j-rijnaars\Documents\screenshots\%s\%s' % (date, testcase))
         self.driver.get_screenshot_as_file('C:\Users\j-rijnaars\Documents\screenshots\%s\%s\%s %s time=%s.png' % (date, testcase, part, selector, time))
 
-    def go_to_sim_only_configpage(self):
+    def go_to_configpage(self, workflow, profile='default'):
         self.cookiebar_accept()
         self.hover('menu', 'link_mobiel')
-        self.elementcheck('menu', 'link_sim_only',click=True)
+        if workflow == 'sim_only':
+            self.elementcheck('menu', 'link_sim_only',click=True)
+        elif workflow == 'handset':
+            self.elementcheck('menu', 'link_handset',click=True)
+            self.hover('handset')
+        else:
+            self.get_screenshot('configure_page', workflow)
+            # if no selector is found, spit out an error
+            self.fail('er gaat iets mis met de workflow selectie')
 
-    def go_to_sim_only_step1(self, profile='default'):
-        self.go_to_sim_only_configpage()
+    def go_to_step1(self, workflow, profile='default'):
+        self.go_to_configpage(workflow, profile)
         #   workaround a-b testing
         try:
             self.driver.find_element_by_css_selector(settings.UI['configure_page']['button_order'])
@@ -191,8 +199,8 @@ class Tele2Test(Extensions, unittest.TestCase):
         self.dropdownselector(profile, 'configure_page', 'select_simcard','simcard_type', 'simcard')
         self.elementcheck('configure_page', 'button_order',click=True)
 
-    def go_to_sim_only_step2(self, profile='default'):
-        self.go_to_sim_only_step1()
+    def go_to_step2(self, workflow, profile='default'):
+        self.go_to_step1(workflow, profile)
         self.dropdownselector_select(profile, 'step_1', 'select_gender', 'gender')
         self.elementcheck('step_1', 'input_firstname',keys=settings.PROFILES[profile]['firstname'])
         self.elementcheck('step_1', 'input_lastname',keys=settings.PROFILES[profile]['lastname'])
@@ -217,8 +225,8 @@ class Tele2Test(Extensions, unittest.TestCase):
                 count += 1
         self.elementcheck('step_1', 'button_next_step', click=True)
 
-    def go_to_sim_only_step3(self, profile='default'):
-        self.go_to_sim_only_step2(profile)
+    def go_to_step3(self, workflow, profile='default'):
+        self.go_to_step2(workflow, profile)
         self.elementcheck('step_2', 'input_IBANnumber',keys=settings.PROFILES[profile]['IBAN_number'])
         self.dropdownselector_select(profile, 'step_2', 'select_idtype', 'document_type')              
         self.elementcheck('step_2', 'input_documentnumber',keys=settings.PROFILES[profile]['document_number'])
@@ -233,8 +241,8 @@ class Tele2Test(Extensions, unittest.TestCase):
         self.dropdownselector(profile, 'step_2', 'select_services', 'services', 'services')              
         self.elementcheck('step_2', 'button_next_step', click=True)
 
-    def go_to_sim_only_step4(self, profile='default'):
-        self.go_to_sim_only_step3(profile)
+    def go_to_step4(self, workflow, profile='default'):
+        self.go_to_step3(workflow, profile)
         if (settings.PROFILES[profile]['delivery']):
             self.elementcheck('step_3', 'ratio_delivery', click=settings.PROFILES[profile]['delivery'])
         if (settings.PROFILES[profile]['click_collect']):
