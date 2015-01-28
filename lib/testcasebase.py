@@ -180,7 +180,8 @@ class Tele2Test(Extensions, unittest.TestCase):
             self.elementcheck('menu', 'link_sim_only',click=True)
         elif workflow == 'handset':
             self.elementcheck('menu', 'link_handset',click=True)
-            self.hover('handset')
+            self.hover('overview_page', 'handset')
+            self.elementcheck('overview_page', 'hover_handset', click=True)
         else:
             self.get_screenshot('configure_page', workflow)
             # if no selector is found, spit out an error
@@ -196,7 +197,8 @@ class Tele2Test(Extensions, unittest.TestCase):
         #   select internet bundle
         self.dropdownselector(profile, 'configure_page', 'select_internetbundle', 'bundles', 'internetbundle')
         self.dropdownselector(profile, 'configure_page', 'select_belbundle', 'bundles', 'belbundle')
-        self.dropdownselector(profile, 'configure_page', 'select_simcard','simcard_type', 'simcard')
+        if workflow == 'sim_only':
+            self.dropdownselector(profile, 'configure_page', 'select_simcard','simcard_type', 'simcard')
         self.elementcheck('configure_page', 'button_order',click=True)
 
     def go_to_step2(self, workflow, profile='default'):

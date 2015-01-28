@@ -116,6 +116,7 @@ UI = {
     },
     'overview_page': {
         'handset': '.default-state img.fld_image[title*="Samsung Galaxy S5 abonnement"]',
+        'hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s5/?color=white"]',
     },
 }
 
