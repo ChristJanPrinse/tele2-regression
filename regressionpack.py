@@ -193,11 +193,27 @@ class SimOnlyWorkflows(Tele2Test):
         self.get_screenshot('succesfull', 'test_simonly_postpaid_porting_clickandcollect')
 
 class HandsetWorkflow(Tele2Test):
+
     def test_handset_postpaid_noporting_delivery(self, workflow='handset', profile='handset_postpaid_noporting_delivery'):
         self.go_to_step4(workflow, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_noporting_delivery')
-    
+
+    def test_handset_postpaid_porting_delivery(self, workflow='handset', profile='handset_postpaid_porting_delivery'):
+        self.go_to_step4(workflow, profile)
+        self.elementcheck('step_4', 'lastpage')
+        self.get_screenshot('succesfull', 'test_handset_postpaid_porting_delivery')
+
+    def test_handset_postpaid_noporting_clickandcollect(self, workflow='sim_only', profile='handset_postpaid_noporting_clickandcollect'):
+        self.go_to_step4(workflow, profile)
+        self.elementcheck('step_4', 'lastpage')
+        self.get_screenshot('succesfull', 'test_handset_postpaid_noporting_clickandcollect')
+
+    def test_handset_postpaid_porting_clickandcollect(self, workflow='sim_only', profile='handset_postpaid_porting_clickandcollect'):
+        self.go_to_step4(workflow, profile)
+        self.elementcheck('step_4', 'lastpage')
+        self.get_screenshot('succesfull', 'test_handset_postpaid_porting_clickandcollect')
+
 # collect the tests and run them
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -17,6 +17,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import Select
+test = []
 
 class Extensions(object):
 
@@ -160,18 +161,17 @@ class Tele2Test(Extensions, unittest.TestCase):
             self.driver.find_element_by_css_selector(settings.UI[part][selector]).clear()
 
     def get_screenshot(self, part, selector):
+        global test
+        test = ''.join(str(x) for x in test)
         testcase = unittest.TestCase.id(self)
         testcase = testcase.split('.')[2]
-        now = datetime.now()
-        date = '%s-%s-%s' % (now.month, now.day, now.year)
-        time = '%s;%s;%s' % (now.hour, now.minute, now.second)
-        newpath = 'C:\Users\j-rijnaars\Documents\screenshots\%s' % date
+        newpath = 'C:\Users\j-rijnaars\Documents\screenshots\%s' % test
         if not os.path.exists(newpath):
-           os.mkdir('C:\Users\j-rijnaars\Documents\screenshots\%s' % date)
-        newpath = 'C:\Users\j-rijnaars\Documents\screenshots\%s\%s' % (date, testcase)
+           os.mkdir('C:\Users\j-rijnaars\Documents\screenshots\%s' % test)
+        newpath = 'C:\Users\j-rijnaars\Documents\screenshots\%s\%s' % (test, testcase)
         if not os.path.exists(newpath):
-            os.mkdir('C:\Users\j-rijnaars\Documents\screenshots\%s\%s' % (date, testcase))
-        self.driver.get_screenshot_as_file('C:\Users\j-rijnaars\Documents\screenshots\%s\%s\%s %s time=%s.png' % (date, testcase, part, selector, time))
+            os.mkdir('C:\Users\j-rijnaars\Documents\screenshots\%s\%s' % (test, testcase))
+        self.driver.get_screenshot_as_file('C:\Users\j-rijnaars\Documents\screenshots\%s\%s\%s %s.png' % (test, testcase, part, selector))
 
     def go_to_configpage(self, workflow, profile='default'):
         self.cookiebar_accept()
@@ -199,6 +199,7 @@ class Tele2Test(Extensions, unittest.TestCase):
         self.dropdownselector(profile, 'configure_page', 'select_belbundle', 'bundles', 'belbundle')
         if workflow == 'sim_only':
             self.dropdownselector(profile, 'configure_page', 'select_simcard','simcard_type', 'simcard')
+        self.get_screenshot('configure_page', 'succes')
         self.elementcheck('configure_page', 'button_order',click=True)
 
     def go_to_step2(self, workflow, profile='default'):
@@ -225,6 +226,7 @@ class Tele2Test(Extensions, unittest.TestCase):
             else:
                 time.sleep(0.1)
                 count += 1
+        self.get_screenshot('step_1', 'succes')
         self.elementcheck('step_1', 'button_next_step', click=True)
 
     def go_to_step3(self, workflow, profile='default'):
@@ -241,6 +243,7 @@ class Tele2Test(Extensions, unittest.TestCase):
             self.elementcheck('step_2', 'select_date', click=True)
             self.elementcheck('step_2', 'select_day', click=True)
         self.dropdownselector(profile, 'step_2', 'select_services', 'services', 'services')              
+        self.get_screenshot('step_2', 'succes')
         self.elementcheck('step_2', 'button_next_step', click=True)
 
     def go_to_step4(self, workflow, profile='default'):
@@ -271,6 +274,12 @@ class Tele2Test(Extensions, unittest.TestCase):
         Hover.perform()
 
     def setUp(self):
+        if test == []:
+            now = datetime.now()
+            date = '%s-%s-%s' % (now.month, now.day, now.year)
+            time = '%s;%s' % (now.hour, now.minute)
+            test.append(date)
+            test.append(time)
         #   load up the remote driver and tell it to use Firefox
         self.driver = webdriver.Remote(
             command_executor="http://127.0.0.1:4444/wd/hub",
