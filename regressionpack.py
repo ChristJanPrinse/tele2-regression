@@ -162,8 +162,8 @@ class SimOnlyFieldValidation(Tele2Test):
 
     def test_document_number_incorrect(self, workflow='sim_only', profile='default'):
         self.go_to_step2(workflow)
-        self.dropdownselector_select(profile, 'step_2', 'select_idtype', 'document_type')              
-        self.field_validation('step_2', 'input_documentnumber', 'select_idtype', settings.DRIVERSLICENCE, 'incorrect', 'documentnumber')
+        self.dropdownselector(profile, 'step_2', 'select_document_type', 'document_type', 'document_type')              
+        self.field_validation('step_2', 'input_documentnumber', 'select_document_type', settings.DRIVERSLICENCE, 'incorrect', 'documentnumber')
 
     def test_porting_phonenumber_field_incorrect(self, workflow='sim_only', profile='porting_mandatory'):
         self.go_to_step2(workflow)

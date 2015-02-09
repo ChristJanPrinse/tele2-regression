@@ -162,16 +162,18 @@ class Tele2Test(Extensions, unittest.TestCase):
 
     def get_screenshot(self, part, selector):
         global test
-        test = ''.join(str(x) for x in test)
         testcase = unittest.TestCase.id(self)
         testcase = testcase.split('.')[2]
-        newpath = 'C:\Users\j-rijnaars\Documents\screenshots\%s' % test
+        newpath = 'H:\output\%s' % test[0]
         if not os.path.exists(newpath):
-           os.mkdir('C:\Users\j-rijnaars\Documents\screenshots\%s' % test)
-        newpath = 'C:\Users\j-rijnaars\Documents\screenshots\%s\%s' % (test, testcase)
+           os.mkdir('H:\output\%s' % test[0])
+        newpath = 'H:\output\%s\%s' % (test[0], test[1])
         if not os.path.exists(newpath):
-            os.mkdir('C:\Users\j-rijnaars\Documents\screenshots\%s\%s' % (test, testcase))
-        self.driver.get_screenshot_as_file('C:\Users\j-rijnaars\Documents\screenshots\%s\%s\%s %s.png' % (test, testcase, part, selector))
+           os.mkdir('H:\output\%s\%s' % (test[0], test[1]))
+        newpath = 'H:\output\%s\%s\%s' % (test[0], test[1], testcase)
+        if not os.path.exists(newpath):
+            os.mkdir('H:\output\%s\%s\%s' % (test[0], test[1], testcase))
+        self.driver.get_screenshot_as_file('H:\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))
 
     def go_to_configpage(self, workflow, profile='default'):
         self.cookiebar_accept()
@@ -204,7 +206,7 @@ class Tele2Test(Extensions, unittest.TestCase):
 
     def go_to_step2(self, workflow, profile='default'):
         self.go_to_step1(workflow, profile)
-        self.dropdownselector_select(profile, 'step_1', 'select_gender', 'gender')
+        self.dropdownselector(profile, 'step_1', 'select_gender', 'gender', 'gender')
         self.elementcheck('step_1', 'input_firstname',keys=settings.PROFILES[profile]['firstname'])
         self.elementcheck('step_1', 'input_lastname',keys=settings.PROFILES[profile]['lastname'])
         self.elementcheck('step_1', 'input_initials',keys=settings.PROFILES[profile]['initials'])
@@ -218,7 +220,7 @@ class Tele2Test(Extensions, unittest.TestCase):
         self.elementcheck('step_1', 'input_repeat_email',keys=settings.PROFILES[profile]['repeat_email'])
         count = 0
         street = settings.PROFILES[profile]['streetname']
-        while not (self.driver.find_element_by_css_selector('#street').get_attribute("value") == 'Surinamestraat') :
+        while not (self.driver.find_element_by_css_selector('#street').get_attribute("value") == settings.PROFILES[profile]['streetname']) :
             if count >= 50:
                 self.get_screenshot('step_1', 'input_street')
                 # if no selector is found, spit out an error
@@ -232,7 +234,7 @@ class Tele2Test(Extensions, unittest.TestCase):
     def go_to_step3(self, workflow, profile='default'):
         self.go_to_step2(workflow, profile)
         self.elementcheck('step_2', 'input_IBANnumber',keys=settings.PROFILES[profile]['IBAN_number'])
-        self.dropdownselector_select(profile, 'step_2', 'select_idtype', 'document_type')              
+        self.dropdownselector(profile, 'step_2', 'select_document_type', 'document_type', 'document_type')              
         self.elementcheck('step_2', 'input_documentnumber',keys=settings.PROFILES[profile]['document_number'])
         self.dropdownselector(profile, 'step_2', 'select_porting', 'porting', 'porting')
         if settings.PROFILES[profile]['porting'] == 'ja':
@@ -252,17 +254,22 @@ class Tele2Test(Extensions, unittest.TestCase):
             self.elementcheck('step_3', 'ratio_delivery', click=settings.PROFILES[profile]['delivery'])
         if (settings.PROFILES[profile]['click_collect']):
             self.elementcheck('step_3', 'ratio_click_collect', click=settings.PROFILES[profile]['click_collect'])
-        count = 0
-        clickandcollect = self.driver.find_element_by_css_selector('.shop-name').text.split()[0]
-        while not (clickandcollect == 'dixons') :
-            if count >= 50:
-                self.get_screenshot('step_3', 'no dixons')
-                # if no selector is found, spit out an error
-                self.fail('finding the nearest dixons took longer then 5 seconds')
-            else:
-                time.sleep(0.1)
-                clickandcollect = self.driver.find_element_by_css_selector('.shop-name').text.split()[0]
-                count += 1
+            count = 0
+            clickandcollect = self.driver.find_element_by_css_selector('.dixons-point-content')
+            while not (clickandcollect.text.split()[0] == 'dixons') :
+                if count >= 50:
+                    if clickandcollect == 'Er':
+                        self.get_screenshot('step_3', 'no dixons found')
+                        # if no selector is found, spit out an error
+                        self.fail('no dixons is found')
+                    else:
+                        self.get_screenshot('step_3', 'timeout')
+                        # if no selector is found, spit out an error
+                        self.fail('dixons gives timeout')
+                else:
+                    time.sleep(0.1)
+                    clickandcollect = self.driver.find_element_by_css_selector('.shop-name')
+                    count += 1
         self.elementcheck('step_3', 'terms', click=True)
         self.elementcheck('step_3', 'directdebid', click=True)
         self.elementcheck('step_3', 'button_next_step', click=True)
@@ -280,6 +287,7 @@ class Tele2Test(Extensions, unittest.TestCase):
             time = '%s;%s' % (now.hour, now.minute)
             test.append(date)
             test.append(time)
+
         #   load up the remote driver and tell it to use Firefox
         self.driver = webdriver.Remote(
             command_executor="http://127.0.0.1:4444/wd/hub",

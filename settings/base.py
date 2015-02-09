@@ -54,14 +54,14 @@ UI = {
         'ja': '#keepnumberSelectBoxItOptions li.selectboxit-option[data-val="1"]',
         'nee': '#keepnumberSelectBoxItOptions li.selectboxit-option[data-val="0"]',
     },
-    'idtype': {
+    'document_type': {
         'pasport': '#identificationSelectBoxItOptions li.selectboxit-option[data-val="PASSPORT"]',
         'idcart': '#identificationSelectBoxItOptions li.selectboxit-option[data-val="ID_CARD"]',
-        'drivers_licence': '#identificationSelectBoxItOptions li.selectboxit-option[data-val="DRIVERS_LICENSE"]',
+        'DRIVERS_LICENSE': '#identificationSelectBoxItOptions li.selectboxit-option[data-val="DRIVERS_LICENSE"]',
     },
     'gender': {
-        'male': '#genderSelectBoxItOptions li.selectboxit-option[data-val="Male"]',
-        'female': '#genderSelectBoxItOptions li.selectboxit-option[data-val="Female"]',
+        'Male': '#genderSelectBoxItOptions li.selectboxit-option[data-val="Male"]',
+        'Female': '#genderSelectBoxItOptions li.selectboxit-option[data-val="Female"]',
     },
     'services': {
         'standaardinstellingen': 'li.selectboxit-option[data-val="defaults"]',
@@ -78,7 +78,7 @@ UI = {
         'input_postcode': '#postcode',
         'input_repeat_email':'#repeat-email',
         'input_street': '#street',
-        'select_gender': 'select#gender',
+        'select_gender': '#genderSelectBoxIt',
         'select_day': '#daySelectBoxIt',
         'select_month': '#monthSelectBoxIt',
         'select_year': '#yearSelectBoxIt',
@@ -95,7 +95,7 @@ UI = {
         'select_current_subscription': '#type-of-subscriptionSelectBoxIt',
         'select_date': '#porting-date',
         'select_day': '.ui-datepicker-days-cell-over',
-        'select_idtype': '#identification',
+        'select_document_type': '#identificationSelectBoxItText',
         'select_mobile_provider': '#mobile-providerSelectBoxIt',
         'select_porting': '#keepnumberSelectBoxIt',
         'select_services': '#additional-servicesSelectBoxIt',
