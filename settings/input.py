@@ -44,7 +44,7 @@ LASTNAME = {
 }
 
 PHONENUMBER = {
-    'incorrect': '1234567890, 061234567, 06-12345678, 06 12345678,',
+    'incorrect': '1234567890, 061234567',
     'corrected': 'asdadasd, 12313adasdas, 06-12345678, 06 12345678,',
 }
 
