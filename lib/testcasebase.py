@@ -174,18 +174,17 @@ class Tele2Test(Extensions, unittest.TestCase):
         self.driver.get_screenshot_as_file('C:\Users\j-rijnaars\Documents\screenshots\%s\%s\%s %s.png' % (test, testcase, part, selector))
 
     def go_to_configpage(self, workflow, profile='default'):
-        self.cookiebar_accept()
-        self.hover('menu', 'link_mobiel')
         if workflow == 'sim_only':
-            self.elementcheck('menu', 'link_sim_only',click=True)
+            self.driver.get('http://espresso-3g-uat.tele2.nl:11111/shop/mobiel/abonnement/sim-only')
         elif workflow == 'handset':
-            self.elementcheck('menu', 'link_handset',click=True)
+            self.driver.get('http://espresso-3g-uat.tele2.nl:11111/shop/')
             self.hover('overview_page', 'handset')
             self.elementcheck('overview_page', 'hover_handset', click=True)
         else:
             self.get_screenshot('configure_page', workflow)
             # if no selector is found, spit out an error
             self.fail('er gaat iets mis met de workflow selectie')
+        self.cookiebar_accept()
 
     def go_to_step1(self, workflow, profile='default'):
         self.go_to_configpage(workflow, profile)
@@ -204,7 +203,7 @@ class Tele2Test(Extensions, unittest.TestCase):
 
     def go_to_step2(self, workflow, profile='default'):
         self.go_to_step1(workflow, profile)
-        self.dropdownselector_select(profile, 'step_1', 'select_gender', 'gender')
+        self.dropdownselector(profile, 'step_1', 'select_gender', 'gender', 'gender')
         self.elementcheck('step_1', 'input_firstname',keys=settings.PROFILES[profile]['firstname'])
         self.elementcheck('step_1', 'input_lastname',keys=settings.PROFILES[profile]['lastname'])
         self.elementcheck('step_1', 'input_initials',keys=settings.PROFILES[profile]['initials'])
@@ -232,7 +231,7 @@ class Tele2Test(Extensions, unittest.TestCase):
     def go_to_step3(self, workflow, profile='default'):
         self.go_to_step2(workflow, profile)
         self.elementcheck('step_2', 'input_IBANnumber',keys=settings.PROFILES[profile]['IBAN_number'])
-        self.dropdownselector_select(profile, 'step_2', 'select_idtype', 'document_type')              
+        self.dropdownselector(profile, 'step_2', 'select_idtype', 'document_type', 'document_type')              
         self.elementcheck('step_2', 'input_documentnumber',keys=settings.PROFILES[profile]['document_number'])
         self.dropdownselector(profile, 'step_2', 'select_porting', 'porting', 'porting')
         if settings.PROFILES[profile]['porting'] == 'ja':
