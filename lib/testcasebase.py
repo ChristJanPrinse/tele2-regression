@@ -281,13 +281,6 @@ class Tele2Test(Extensions, unittest.TestCase):
         Hover.perform()
 
     def setUp(self):
-        if test == []:
-            now = datetime.now()
-            date = '%s-%s-%s' % (now.month, now.day, now.year)
-            time = '%s;%s' % (now.hour, now.minute)
-            test.append(date)
-            test.append(time)
-
         #   load up the remote driver and tell it to use Firefox
         self.driver = webdriver.Remote(
             command_executor="http://127.0.0.1:4444/wd/hub",

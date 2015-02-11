@@ -1,6 +1,9 @@
 import HTMLTestRunner
 import os
+import time
+import sys
 
+from datetime import datetime
 from lib.testcasebase import Tele2Test, unittest, settings, test
 from selenium.common.exceptions import NoSuchElementException
 
@@ -195,7 +198,7 @@ class SimOnlyWorkflows(Tele2Test):
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_simonly_postpaid_porting_clickandcollect')
 
-class HandsetWorkflow(Tele2Test):
+class HandsetWorkflows(Tele2Test):
 
     def test_handset_postpaid_noporting_delivery(self, workflow='handset', profile='handset_postpaid_noporting_delivery'):
         self.go_to_step4(workflow, profile)
@@ -217,28 +220,32 @@ class HandsetWorkflow(Tele2Test):
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_porting_clickandcollect')
 
-class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation, SimOnlyWorkflows, HandsetWorkflow):
+class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation, SimOnlyWorkflows, HandsetWorkflows):
     def function():
         pass
+'''
+--------------------------------------------------------------------------------------------------------------------------------
+'''
 
-#   collect the tests
-suite = unittest.TestLoader().loadTestsFromTestCase(ALL)
-unittest.TextTestRunner(verbosity=2).run(suite)
-
-#   create report in testmap
-global test
-newpath = 'H:\output\%s' % test[0]
-if not os.path.exists(newpath):
-   os.mkdir('H:\output\%s' % test[0])
+#   create general folder
+now = datetime.now()
+date = '%s-%s-%s' % (now.month, now.day, now.year)
+time = '%s;%s' % (now.hour, now.minute)
+test.append(date)
+test.append(time)
 newpath = 'H:\output\%s\%s' % (test[0], test[1])
 if not os.path.exists(newpath):
-   os.mkdir('H:\output\%s\%s' % (test[0], test[1]))
+   os.makedirs('H:\output\%s\%s' % (test[0], test[1]))
+
+#   create report in testmap
 path = 'H:\output\%s\%s\Report.html' % (test[0], test[1])
 outfile = open(path, 'w')
+
  #  run testcases
-runner = HTMLTestRunner.HTMLTestRunner(
-                stream=outfile,
+suite = unittest.TestLoader().loadTestsFromTestCase(globals()[sys.argv[1]])
+HTMLTestRunner.HTMLTestRunner(
+                stream= outfile,
                 title='Test Report',
-                description='This demonstrates the report output by Prasanna.Yelsangikar.'
-                )
-runner.run(suite)
+                description='Here is the overview of the testrun.',
+                verbosity = 2
+                ).run(suite)
