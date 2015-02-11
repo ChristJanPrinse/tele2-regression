@@ -1,4 +1,7 @@
-from lib.testcasebase import Tele2Test, unittest, settings
+import HTMLTestRunner
+import os
+
+from lib.testcasebase import Tele2Test, unittest, settings, test
 from selenium.common.exceptions import NoSuchElementException
 
 class SimOnlyFieldCorrection(Tele2Test):
@@ -214,6 +217,28 @@ class HandsetWorkflow(Tele2Test):
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_porting_clickandcollect')
 
-# collect the tests and run them
-if __name__ == "__main__":
-    unittest.main(verbosity=2)
+class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation, SimOnlyWorkflows, HandsetWorkflow):
+    def function():
+        pass
+
+#   collect the tests
+suite = unittest.TestLoader().loadTestsFromTestCase(ALL)
+unittest.TextTestRunner(verbosity=2).run(suite)
+
+#   create report in testmap
+global test
+newpath = 'H:\output\%s' % test[0]
+if not os.path.exists(newpath):
+   os.mkdir('H:\output\%s' % test[0])
+newpath = 'H:\output\%s\%s' % (test[0], test[1])
+if not os.path.exists(newpath):
+   os.mkdir('H:\output\%s\%s' % (test[0], test[1]))
+path = 'H:\output\%s\%s\Report.html' % (test[0], test[1])
+outfile = open(path, 'w')
+ #  run testcases
+runner = HTMLTestRunner.HTMLTestRunner(
+                stream=outfile,
+                title='Test Report',
+                description='This demonstrates the report output by Prasanna.Yelsangikar.'
+                )
+runner.run(suite)
