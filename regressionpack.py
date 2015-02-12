@@ -220,6 +220,14 @@ class HandsetWorkflows(Tele2Test):
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_porting_clickandcollect')
 
+class PrepaidWorkflows(Tele2Test):
+
+    def test_simonly_prepaid(self, workflow='sim_only', profile='simonly_prepaid_porting_clickandcollect'):
+        self.fail('not yet created')
+
+    def test_simonly_prepaid(self, workflow='sim_only', profile='simonly_prepaid_porting_clickandcollect'):
+        self.fail('not yet created')
+        
 class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation, SimOnlyWorkflows, HandsetWorkflows):
     def function():
         pass
