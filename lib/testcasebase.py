@@ -184,6 +184,9 @@ class Tele2Test(Extensions, unittest.TestCase):
             self.elementcheck('menu', 'link_handset',click=True)
             self.hover('overview_page', 'handset')
             self.elementcheck('overview_page', 'hover_handset', click=True)
+        elif workflow == 'prepaid':
+            self.elementcheck('menu', 'link_prepaid',click=True)
+            self.elementcheck('overview_page', 'prepaid_simonly', click=True)
         else:
             self.get_screenshot('configure_page', workflow)
             # if no selector is found, spit out an error
@@ -281,16 +284,20 @@ class Tele2Test(Extensions, unittest.TestCase):
         Hover.perform()
 
     def setUp(self):
+        fp = webdriver.FirefoxProfile()
+        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\tele2 regression\\addons\\Firebug.xpi')
+        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\tele2 regression\\addons\\Firefinder.xpi')
         #   load up the remote driver and tell it to use Firefox
         self.driver = webdriver.Remote(
             command_executor="http://127.0.0.1:4444/wd/hub",
-            desired_capabilities=DesiredCapabilities.FIREFOX)
+            desired_capabilities=DesiredCapabilities.FIREFOX,
+            browser_profile=fp)
         self.driver.implicitly_wait(10)
         self.driver.set_window_size(1250,1000)
  
         #   navigate to URL and log in as developer (since the script creates a new instance with clean cache)
         self.driver.get('https://www.tele2.nl/')
 
-    def tearDown(self):
-        #   close the browser
-        self.driver.close()
+    '''def tearDown(self):
+                    #   close the browser
+                    self.driver.close()'''

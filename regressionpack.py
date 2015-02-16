@@ -222,15 +222,16 @@ class HandsetWorkflows(Tele2Test):
 
 class PrepaidWorkflows(Tele2Test):
 
-    def test_simonly_prepaid(self, workflow='sim_only', profile='simonly_prepaid_porting_clickandcollect'):
+    def test_simonly_prepaid(self, workflow='prepaid', profile='simonly_prepaid_porting_clickandcollect'):
+        self.go_to_configpage(workflow, profile)
+
+    def test_handset_prepaid(self, workflow='prepaid', profile='simonly_prepaid_porting_clickandcollect'):
         self.fail('not yet created')
 
-    def test_simonly_prepaid(self, workflow='sim_only', profile='simonly_prepaid_porting_clickandcollect'):
-        self.fail('not yet created')
-        
 class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation, SimOnlyWorkflows, HandsetWorkflows):
     def function():
         pass
+
 '''
 --------------------------------------------------------------------------------------------------------------------------------
 '''
@@ -245,7 +246,7 @@ newpath = 'H:\output\%s\%s' % (test[0], test[1])
 if not os.path.exists(newpath):
    os.makedirs('H:\output\%s\%s' % (test[0], test[1]))
 
-#   create report in testmap
+#   create report in testmap and run scripts
 path = 'H:\output\%s\%s\Report.html' % (test[0], test[1])
 outfile = open(path, 'w')
 

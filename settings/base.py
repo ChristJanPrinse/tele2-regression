@@ -44,6 +44,7 @@ UI = {
         'link_mobiel': 'a[data-content="mobiel"]',
         'link_sim_only':'#hover-menu a[href*="sim-only"]',
         'link_handset':'#hover-menu a[href*="smartphones"]',
+        'link_prepaid': '#hover-menu a[href*="prepaid"]',
     },
     'mobile_provider': {
         'tele2': '#mobile-providerSelectBoxItOptions li.selectboxit-option[data-val="TEL2"]',
@@ -117,6 +118,7 @@ UI = {
     'overview_page': {
         'handset': '.default-state img.fld_image[title*="Samsung Galaxy S5 abonnement"]',
         'hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s5/?color=white"]',
+        'prepaid_simonly': 'a.fld_link[title*="Sim Only"]',
     },
 }
 
