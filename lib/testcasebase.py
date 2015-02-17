@@ -295,8 +295,8 @@ class Tele2Test(Extensions, unittest.TestCase):
 
     def setUp(self):
         fp = webdriver.FirefoxProfile()
-        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\tele2 regression\\addons\\Firebug.xpi')
-        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\tele2 regression\\addons\\Firefinder.xpi')
+        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\addons\\Firebug.xpi')
+        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\addons\\Firefinder.xpi')
         #   load up the remote driver and tell it to use Firefox
         self.driver = webdriver.Remote(
             command_executor="http://127.0.0.1:4444/wd/hub",
