@@ -6,6 +6,7 @@ import unittest
 import time
 import settings
 import os
+import sys
 
 from datetime import datetime
 from random import randint
@@ -177,20 +178,33 @@ class Tele2Test(Extensions, unittest.TestCase):
 
     def go_to_configpage(self, workflow, profile='default'):
         self.cookiebar_accept()
-        self.hover('menu', 'link_mobiel')
-        if workflow == 'sim_only':
-            self.elementcheck('menu', 'link_sim_only',click=True)
-        elif workflow == 'handset':
-            self.elementcheck('menu', 'link_handset',click=True)
-            self.hover('overview_page', 'handset')
-            self.elementcheck('overview_page', 'hover_handset', click=True)
-        elif workflow == 'simonly_prepaid':
-            self.elementcheck('menu', 'link_prepaid',click=True)
-            self.elementcheck('overview_page', 'prepaid_simonly', click=True)
+        if len(sys.argv) > 2:
+            if sys.argv[2].lower() == 'uat':
+                if workflow == 'sim_only':
+                    self.driver.get('http://espresso-3g-uat.tele2.nl:11111/shop/mobiel/abonnement/sim-only')
+                elif workflow == 'handset':
+                    self.driver.get('http://espresso-3g-uat.tele2.nl:11111/shop')
+                    self.hover('overview_page', 'uat_handset')
+                    self.elementcheck('overview_page', 'uat_hover_handset', click=True)
+                else:
+                    self.get_screenshot('configure_page', workflow)
+                    # if no selector is found, spit out an error
+                    self.fail('er gaat iets mis met de workflow selectie')
         else:
-            self.get_screenshot('configure_page', workflow)
-            # if no selector is found, spit out an error
-            self.fail('er gaat iets mis met de workflow selectie')
+            self.hover('menu', 'link_mobiel')
+            if workflow == 'sim_only':
+                self.elementcheck('menu', 'link_sim_only',click=True)
+            elif workflow == 'handset':
+                self.elementcheck('menu', 'link_handset',click=True)
+                self.hover('overview_page', 'handset')
+                self.elementcheck('overview_page', 'hover_handset', click=True)
+            elif workflow == 'simonly_prepaid':
+                self.elementcheck('menu', 'link_prepaid',click=True)
+                self.elementcheck('overview_page', 'prepaid_simonly', click=True)
+            else:
+                self.get_screenshot('configure_page', workflow)
+                # if no selector is found, spit out an error
+                self.fail('er gaat iets mis met de workflow selectie')
 
     def go_to_step1(self, workflow, profile='default'):
         self.go_to_configpage(workflow, profile)
@@ -308,6 +322,6 @@ class Tele2Test(Extensions, unittest.TestCase):
         #   navigate to URL and log in as developer (since the script creates a new instance with clean cache)
         self.driver.get('https://www.tele2.nl/')
 
-    '''def tearDown(self):
+    def tearDown(self):
         #   close the browser
-        self.driver.close()'''
+        self.driver.close()

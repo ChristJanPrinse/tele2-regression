@@ -210,12 +210,12 @@ class HandsetWorkflows(Tele2Test):
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_porting_delivery')
 
-    def test_handset_postpaid_noporting_clickandcollect(self, workflow='sim_only', profile='handset_postpaid_noporting_clickandcollect'):
+    def test_handset_postpaid_noporting_clickandcollect(self, workflow='handset', profile='handset_postpaid_noporting_clickandcollect'):
         self.go_to_step4(workflow, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_noporting_clickandcollect')
 
-    def test_handset_postpaid_porting_clickandcollect(self, workflow='sim_only', profile='handset_postpaid_porting_clickandcollect'):
+    def test_handset_postpaid_porting_clickandcollect(self, workflow='handset', profile='handset_postpaid_porting_clickandcollect'):
         self.go_to_step4(workflow, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_porting_clickandcollect')
@@ -237,7 +237,6 @@ class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation,
 '''
 --------------------------------------------------------------------------------------------------------------------------------
 '''
-
 #   create general folder
 now = datetime.now()
 date = '%s-%s-%s' % (now.month, now.day, now.year)
@@ -250,6 +249,8 @@ if not os.path.exists(newpath):
 
 #   create report in testmap and run scripts
 path = 'H:\output\%s\%s\Report.html' % (test[0], test[1])
+#   path = 'H:\\output\\test\\Report.html'
+
 outfile = open(path, 'w')
 
  #  run testcases

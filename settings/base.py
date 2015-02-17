@@ -120,7 +120,9 @@ UI = {
     },
     'overview_page': {
         'handset': '.default-state img.fld_image[title*="Samsung Galaxy S5 abonnement"]',
-        'hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s5/?color=white"]',
+        'hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s5/?color=black"]',
+        'uat_handset': '.default-state img.fld_image[title*="Samsung Galaxy S4 abonnement"]',
+        'uat_hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s4/?color=black"]',
         'prepaid_simonly': 'a.fld_link[title*="Sim Only"]',
     },
 }
