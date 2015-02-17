@@ -44,24 +44,28 @@ UI = {
         'link_mobiel': 'a[data-content="mobiel"]',
         'link_sim_only':'#hover-menu a[href*="sim-only"]',
         'link_handset':'#hover-menu a[href*="smartphones"]',
+        'link_prepaid': '#hover-menu a[href*="prepaid"]',
     },
     'mobile_provider': {
         'tele2': '#mobile-providerSelectBoxItOptions li.selectboxit-option[data-val="TEL2"]',
         'tele2_zakelijk':'#mobile-providerSelectBoxItOptions li.selectboxit-option[data-val="TL2Z"]',
         'KPN':'#mobile-providerSelectBoxItOptions li.selectboxit-option[data-val="SPM"]',
     },
+    'prepaid': {
+        'button_order': '.button.btn_with_icon',
+    },
     'porting': {
         'ja': '#keepnumberSelectBoxItOptions li.selectboxit-option[data-val="1"]',
         'nee': '#keepnumberSelectBoxItOptions li.selectboxit-option[data-val="0"]',
     },
-    'idtype': {
+    'document_type': {
         'pasport': '#identificationSelectBoxItOptions li.selectboxit-option[data-val="PASSPORT"]',
         'idcart': '#identificationSelectBoxItOptions li.selectboxit-option[data-val="ID_CARD"]',
-        'drivers_licence': '#identificationSelectBoxItOptions li.selectboxit-option[data-val="DRIVERS_LICENSE"]',
+        'DRIVERS_LICENSE': '#identificationSelectBoxItOptions li.selectboxit-option[data-val="DRIVERS_LICENSE"]',
     },
     'gender': {
-        'male': '#genderSelectBoxItOptions li.selectboxit-option[data-val="Male"]',
-        'female': '#genderSelectBoxItOptions li.selectboxit-option[data-val="Female"]',
+        'Male': '#genderSelectBoxItOptions li.selectboxit-option[data-val="Male"]',
+        'Female': '#genderSelectBoxItOptions li.selectboxit-option[data-val="Female"]',
     },
     'services': {
         'standaardinstellingen': 'li.selectboxit-option[data-val="defaults"]',
@@ -95,7 +99,7 @@ UI = {
         'select_current_subscription': '#type-of-subscriptionSelectBoxIt',
         'select_date': '#porting-date',
         'select_day': '.ui-datepicker-days-cell-over',
-        'select_idtype': '#identificationSelectBoxIt',
+        'select_document_type': '#identificationSelectBoxItText',
         'select_mobile_provider': '#mobile-providerSelectBoxIt',
         'select_porting': '#keepnumberSelectBoxIt',
         'select_services': '#additional-servicesSelectBoxIt',
@@ -117,6 +121,7 @@ UI = {
     'overview_page': {
         'handset': '.default-state img.fld_image[title*="Samsung Galaxy S5 abonnement"]',
         'hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s5/?color=white"]',
+        'prepaid_simonly': 'a.fld_link[title*="Sim Only"]',
     },
 }
 

@@ -1,4 +1,10 @@
-from lib.testcasebase import Tele2Test, unittest, settings
+import HTMLTestRunner
+import os
+import time
+import sys
+
+from datetime import datetime
+from lib.testcasebase import Tele2Test, unittest, settings, test
 from selenium.common.exceptions import NoSuchElementException
 
 class SimOnlyFieldCorrection(Tele2Test):
@@ -162,8 +168,8 @@ class SimOnlyFieldValidation(Tele2Test):
 
     def test_document_number_incorrect(self, workflow='sim_only', profile='default'):
         self.go_to_step2(workflow)
-        self.dropdownselector_select(profile, 'step_2', 'select_idtype', 'document_type')              
-        self.field_validation('step_2', 'input_documentnumber', 'select_idtype', settings.DRIVERSLICENCE, 'incorrect', 'documentnumber')
+        self.dropdownselector(profile, 'step_2', 'select_document_type', 'document_type', 'document_type')              
+        self.field_validation('step_2', 'input_documentnumber', 'select_document_type', settings.DRIVERSLICENCE, 'incorrect', 'documentnumber')
 
     def test_porting_phonenumber_field_incorrect(self, workflow='sim_only', profile='porting_mandatory'):
         self.go_to_step2(workflow)
@@ -192,7 +198,7 @@ class SimOnlyWorkflows(Tele2Test):
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_simonly_postpaid_porting_clickandcollect')
 
-class HandsetWorkflow(Tele2Test):
+class HandsetWorkflows(Tele2Test):
 
     def test_handset_postpaid_noporting_delivery(self, workflow='handset', profile='handset_postpaid_noporting_delivery'):
         self.go_to_step4(workflow, profile)
@@ -214,6 +220,43 @@ class HandsetWorkflow(Tele2Test):
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_porting_clickandcollect')
 
-# collect the tests and run them
-if __name__ == "__main__":
-    unittest.main(verbosity=2)
+class PrepaidWorkflows(Tele2Test):
+
+    def test_simonly_prepaid(self, workflow='simonly_prepaid', profile='simonly_prepaid'):
+        self.go_to_step3_prepaid(workflow, profile)
+        self.elementcheck('step_4', 'lastpage')
+        self.get_screenshot('succesfull', 'test_simonly_prepaid')
+
+    def test_handset_prepaid(self, workflow='prepaid', profile='handset_prepaid'):
+        self.fail('not yet created')
+
+class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation, SimOnlyWorkflows, HandsetWorkflows):
+    def function():
+        pass
+
+'''
+--------------------------------------------------------------------------------------------------------------------------------
+'''
+
+#   create general folder
+now = datetime.now()
+date = '%s-%s-%s' % (now.month, now.day, now.year)
+time = '%s;%s' % (now.hour, now.minute)
+test.append(date)
+test.append(time)
+newpath = 'H:\output\%s\%s' % (test[0], test[1])
+if not os.path.exists(newpath):
+   os.makedirs('H:\output\%s\%s' % (test[0], test[1]))
+
+#   create report in testmap and run scripts
+path = 'H:\output\%s\%s\Report.html' % (test[0], test[1])
+outfile = open(path, 'w')
+
+ #  run testcases
+suite = unittest.TestLoader().loadTestsFromTestCase(globals()[sys.argv[1]])
+HTMLTestRunner.HTMLTestRunner(
+                stream= outfile,
+                title='Test Report',
+                description='Here is the overview of the testrun.',
+                verbosity = 2
+                ).run(suite)

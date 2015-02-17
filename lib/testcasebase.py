@@ -162,44 +162,54 @@ class Tele2Test(Extensions, unittest.TestCase):
 
     def get_screenshot(self, part, selector):
         global test
-        test = ''.join(str(x) for x in test)
         testcase = unittest.TestCase.id(self)
         testcase = testcase.split('.')[2]
-        newpath = 'C:\Users\j-rijnaars\Documents\screenshots\%s' % test
+        newpath = 'H:\output\%s' % test[0]
         if not os.path.exists(newpath):
-           os.mkdir('C:\Users\j-rijnaars\Documents\screenshots\%s' % test)
-        newpath = 'C:\Users\j-rijnaars\Documents\screenshots\%s\%s' % (test, testcase)
+           os.mkdir('H:\output\%s' % test[0])
+        newpath = 'H:\output\%s\%s' % (test[0], test[1])
         if not os.path.exists(newpath):
-            os.mkdir('C:\Users\j-rijnaars\Documents\screenshots\%s\%s' % (test, testcase))
-        self.driver.get_screenshot_as_file('C:\Users\j-rijnaars\Documents\screenshots\%s\%s\%s %s.png' % (test, testcase, part, selector))
+           os.mkdir('H:\output\%s\%s' % (test[0], test[1]))
+        newpath = 'H:\output\%s\%s\%s' % (test[0], test[1], testcase)
+        if not os.path.exists(newpath):
+            os.mkdir('H:\output\%s\%s\%s' % (test[0], test[1], testcase))
+        self.driver.get_screenshot_as_file('H:\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))
 
     def go_to_configpage(self, workflow, profile='default'):
+        self.cookiebar_accept()
+        self.hover('menu', 'link_mobiel')
         if workflow == 'sim_only':
-            self.driver.get('http://espresso-3g-uat.tele2.nl:11111/shop/mobiel/abonnement/sim-only')
+            self.elementcheck('menu', 'link_sim_only',click=True)
         elif workflow == 'handset':
-            self.driver.get('http://espresso-3g-uat.tele2.nl:11111/shop/')
+            self.elementcheck('menu', 'link_handset',click=True)
             self.hover('overview_page', 'handset')
             self.elementcheck('overview_page', 'hover_handset', click=True)
+        elif workflow == 'simonly_prepaid':
+            self.elementcheck('menu', 'link_prepaid',click=True)
+            self.elementcheck('overview_page', 'prepaid_simonly', click=True)
         else:
             self.get_screenshot('configure_page', workflow)
             # if no selector is found, spit out an error
             self.fail('er gaat iets mis met de workflow selectie')
-        self.cookiebar_accept()
 
     def go_to_step1(self, workflow, profile='default'):
         self.go_to_configpage(workflow, profile)
         #   workaround a-b testing
-        try:
-            self.driver.find_element_by_css_selector(settings.UI['configure_page']['button_order'])
-        except NoSuchElementException:
-            self.elementcheck('homepage', 'button_banner', click=True)
-        #   select internet bundle
-        self.dropdownselector(profile, 'configure_page', 'select_internetbundle', 'bundles', 'internetbundle')
-        self.dropdownselector(profile, 'configure_page', 'select_belbundle', 'bundles', 'belbundle')
-        if workflow == 'sim_only':
-            self.dropdownselector(profile, 'configure_page', 'select_simcard','simcard_type', 'simcard')
-        self.get_screenshot('configure_page', 'succes')
-        self.elementcheck('configure_page', 'button_order',click=True)
+        if workflow == 'sim_only' or workflow == 'handset':
+            try:
+                self.driver.find_element_by_css_selector(settings.UI['configure_page']['button_order'])
+            except NoSuchElementException:
+                self.elementcheck('homepage', 'button_banner', click=True)
+            #   select internet bundle
+            self.dropdownselector(profile, 'configure_page', 'select_internetbundle', 'bundles', 'internetbundle')
+            self.dropdownselector(profile, 'configure_page', 'select_belbundle', 'bundles', 'belbundle')
+            if workflow == 'sim_only':
+                self.dropdownselector(profile, 'configure_page', 'select_simcard','simcard_type', 'simcard')
+            self.get_screenshot('configure_page', 'succes')
+            self.elementcheck('configure_page', 'button_order',click=True)
+        elif workflow == 'simonly_prepaid':
+            self.get_screenshot('configure_page', 'succes')
+            self.elementcheck('prepaid', 'button_order', click=True)            
 
     def go_to_step2(self, workflow, profile='default'):
         self.go_to_step1(workflow, profile)
@@ -207,9 +217,10 @@ class Tele2Test(Extensions, unittest.TestCase):
         self.elementcheck('step_1', 'input_firstname',keys=settings.PROFILES[profile]['firstname'])
         self.elementcheck('step_1', 'input_lastname',keys=settings.PROFILES[profile]['lastname'])
         self.elementcheck('step_1', 'input_initials',keys=settings.PROFILES[profile]['initials'])
-        self.dropdownselector(profile, 'step_1', 'select_day', 'day', 'day')
-        self.dropdownselector(profile, 'step_1', 'select_month', 'month', 'month')
-        self.dropdownselector(profile, 'step_1', 'select_year', 'year', 'year')
+        if not workflow == 'simonly_prepaid':
+            self.dropdownselector(profile, 'step_1', 'select_day', 'day', 'day')
+            self.dropdownselector(profile, 'step_1', 'select_month', 'month', 'month')
+            self.dropdownselector(profile, 'step_1', 'select_year', 'year', 'year')
         self.elementcheck('step_1', 'input_postcode',keys=settings.PROFILES[profile]['postcode'])
         self.elementcheck('step_1', 'input_housenumber',keys=settings.PROFILES[profile]['housenumber'])
         self.elementcheck('step_1', 'input_phonenumber',keys=settings.PROFILES[profile]['phonenumber'])
@@ -217,7 +228,7 @@ class Tele2Test(Extensions, unittest.TestCase):
         self.elementcheck('step_1', 'input_repeat_email',keys=settings.PROFILES[profile]['repeat_email'])
         count = 0
         street = settings.PROFILES[profile]['streetname']
-        while not (self.driver.find_element_by_css_selector('#street').get_attribute("value") == 'Surinamestraat') :
+        while not (self.driver.find_element_by_css_selector('#street').get_attribute("value") == settings.PROFILES[profile]['streetname']) :
             if count >= 50:
                 self.get_screenshot('step_1', 'input_street')
                 # if no selector is found, spit out an error
@@ -231,7 +242,7 @@ class Tele2Test(Extensions, unittest.TestCase):
     def go_to_step3(self, workflow, profile='default'):
         self.go_to_step2(workflow, profile)
         self.elementcheck('step_2', 'input_IBANnumber',keys=settings.PROFILES[profile]['IBAN_number'])
-        self.dropdownselector(profile, 'step_2', 'select_idtype', 'document_type', 'document_type')              
+        self.dropdownselector(profile, 'step_2', 'select_document_type', 'document_type', 'document_type')              
         self.elementcheck('step_2', 'input_documentnumber',keys=settings.PROFILES[profile]['document_number'])
         self.dropdownselector(profile, 'step_2', 'select_porting', 'porting', 'porting')
         if settings.PROFILES[profile]['porting'] == 'ja':
@@ -251,19 +262,29 @@ class Tele2Test(Extensions, unittest.TestCase):
             self.elementcheck('step_3', 'ratio_delivery', click=settings.PROFILES[profile]['delivery'])
         if (settings.PROFILES[profile]['click_collect']):
             self.elementcheck('step_3', 'ratio_click_collect', click=settings.PROFILES[profile]['click_collect'])
-        count = 0
-        clickandcollect = self.driver.find_element_by_css_selector('.shop-name').text.split()[0]
-        while not (clickandcollect == 'dixons') :
-            if count >= 50:
-                self.get_screenshot('step_3', 'no dixons')
-                # if no selector is found, spit out an error
-                self.fail('finding the nearest dixons took longer then 5 seconds')
-            else:
-                time.sleep(0.1)
-                clickandcollect = self.driver.find_element_by_css_selector('.shop-name').text.split()[0]
-                count += 1
+            count = 0
+            clickandcollect = self.driver.find_element_by_css_selector('.dixons-point-content')
+            while not (clickandcollect.text.split()[0] == 'dixons') :
+                if count >= 50:
+                    if clickandcollect == 'Er':
+                        self.get_screenshot('step_3', 'no dixons found')
+                        # if no selector is found, spit out an error
+                        self.fail('no dixons is found')
+                    else:
+                        self.get_screenshot('step_3', 'timeout')
+                        # if no selector is found, spit out an error
+                        self.fail('dixons gives timeout')
+                else:
+                    time.sleep(0.1)
+                    clickandcollect = self.driver.find_element_by_css_selector('.shop-name')
+                    count += 1
         self.elementcheck('step_3', 'terms', click=True)
         self.elementcheck('step_3', 'directdebid', click=True)
+        self.elementcheck('step_3', 'button_next_step', click=True)
+
+    def go_to_step3_prepaid(self, workflow, profile='default'):
+        self.go_to_step2(workflow, profile)
+        self.elementcheck('step_3', 'terms', click=True)
         self.elementcheck('step_3', 'button_next_step', click=True)
 
     def hover (self, part, selector):
@@ -273,22 +294,20 @@ class Tele2Test(Extensions, unittest.TestCase):
         Hover.perform()
 
     def setUp(self):
-        if test == []:
-            now = datetime.now()
-            date = '%s-%s-%s' % (now.month, now.day, now.year)
-            time = '%s;%s' % (now.hour, now.minute)
-            test.append(date)
-            test.append(time)
+        fp = webdriver.FirefoxProfile()
+        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\tele2 regression\\addons\\Firebug.xpi')
+        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\tele2 regression\\addons\\Firefinder.xpi')
         #   load up the remote driver and tell it to use Firefox
         self.driver = webdriver.Remote(
             command_executor="http://127.0.0.1:4444/wd/hub",
-            desired_capabilities=DesiredCapabilities.FIREFOX)
+            desired_capabilities=DesiredCapabilities.FIREFOX,
+            browser_profile=fp)
         self.driver.implicitly_wait(10)
         self.driver.set_window_size(1250,1000)
  
         #   navigate to URL and log in as developer (since the script creates a new instance with clean cache)
         self.driver.get('https://www.tele2.nl/')
 
-    def tearDown(self):
+    '''def tearDown(self):
         #   close the browser
-        self.driver.close()
+        self.driver.close()'''
