@@ -184,7 +184,7 @@ class Tele2Test(Extensions, unittest.TestCase):
             self.elementcheck('menu', 'link_handset',click=True)
             self.hover('overview_page', 'handset')
             self.elementcheck('overview_page', 'hover_handset', click=True)
-        elif workflow == 'prepaid':
+        elif workflow == 'simonly_prepaid':
             self.elementcheck('menu', 'link_prepaid',click=True)
             self.elementcheck('overview_page', 'prepaid_simonly', click=True)
         else:
@@ -195,17 +195,21 @@ class Tele2Test(Extensions, unittest.TestCase):
     def go_to_step1(self, workflow, profile='default'):
         self.go_to_configpage(workflow, profile)
         #   workaround a-b testing
-        try:
-            self.driver.find_element_by_css_selector(settings.UI['configure_page']['button_order'])
-        except NoSuchElementException:
-            self.elementcheck('homepage', 'button_banner', click=True)
-        #   select internet bundle
-        self.dropdownselector(profile, 'configure_page', 'select_internetbundle', 'bundles', 'internetbundle')
-        self.dropdownselector(profile, 'configure_page', 'select_belbundle', 'bundles', 'belbundle')
-        if workflow == 'sim_only':
-            self.dropdownselector(profile, 'configure_page', 'select_simcard','simcard_type', 'simcard')
-        self.get_screenshot('configure_page', 'succes')
-        self.elementcheck('configure_page', 'button_order',click=True)
+        if workflow == 'sim_only' or workflow == 'handset':
+            try:
+                self.driver.find_element_by_css_selector(settings.UI['configure_page']['button_order'])
+            except NoSuchElementException:
+                self.elementcheck('homepage', 'button_banner', click=True)
+            #   select internet bundle
+            self.dropdownselector(profile, 'configure_page', 'select_internetbundle', 'bundles', 'internetbundle')
+            self.dropdownselector(profile, 'configure_page', 'select_belbundle', 'bundles', 'belbundle')
+            if workflow == 'sim_only':
+                self.dropdownselector(profile, 'configure_page', 'select_simcard','simcard_type', 'simcard')
+            self.get_screenshot('configure_page', 'succes')
+            self.elementcheck('configure_page', 'button_order',click=True)
+        elif workflow == 'simonly_prepaid':
+            self.get_screenshot('configure_page', 'succes')
+            self.elementcheck('prepaid', 'button_order', click=True)            
 
     def go_to_step2(self, workflow, profile='default'):
         self.go_to_step1(workflow, profile)
@@ -213,9 +217,10 @@ class Tele2Test(Extensions, unittest.TestCase):
         self.elementcheck('step_1', 'input_firstname',keys=settings.PROFILES[profile]['firstname'])
         self.elementcheck('step_1', 'input_lastname',keys=settings.PROFILES[profile]['lastname'])
         self.elementcheck('step_1', 'input_initials',keys=settings.PROFILES[profile]['initials'])
-        self.dropdownselector(profile, 'step_1', 'select_day', 'day', 'day')
-        self.dropdownselector(profile, 'step_1', 'select_month', 'month', 'month')
-        self.dropdownselector(profile, 'step_1', 'select_year', 'year', 'year')
+        if not workflow == 'simonly_prepaid':
+            self.dropdownselector(profile, 'step_1', 'select_day', 'day', 'day')
+            self.dropdownselector(profile, 'step_1', 'select_month', 'month', 'month')
+            self.dropdownselector(profile, 'step_1', 'select_year', 'year', 'year')
         self.elementcheck('step_1', 'input_postcode',keys=settings.PROFILES[profile]['postcode'])
         self.elementcheck('step_1', 'input_housenumber',keys=settings.PROFILES[profile]['housenumber'])
         self.elementcheck('step_1', 'input_phonenumber',keys=settings.PROFILES[profile]['phonenumber'])
@@ -277,6 +282,11 @@ class Tele2Test(Extensions, unittest.TestCase):
         self.elementcheck('step_3', 'directdebid', click=True)
         self.elementcheck('step_3', 'button_next_step', click=True)
 
+    def go_to_step3_prepaid(self, workflow, profile='default'):
+        self.go_to_step2(workflow, profile)
+        self.elementcheck('step_3', 'terms', click=True)
+        self.elementcheck('step_3', 'button_next_step', click=True)
+
     def hover (self, part, selector):
         locator = settings.UI[part][selector]
         add = self.driver.find_element_by_css_selector(locator)
@@ -299,5 +309,5 @@ class Tele2Test(Extensions, unittest.TestCase):
         self.driver.get('https://www.tele2.nl/')
 
     '''def tearDown(self):
-                    #   close the browser
-                    self.driver.close()'''
+        #   close the browser
+        self.driver.close()'''

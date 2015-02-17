@@ -222,10 +222,12 @@ class HandsetWorkflows(Tele2Test):
 
 class PrepaidWorkflows(Tele2Test):
 
-    def test_simonly_prepaid(self, workflow='prepaid', profile='simonly_prepaid_porting_clickandcollect'):
-        self.go_to_configpage(workflow, profile)
+    def test_simonly_prepaid(self, workflow='simonly_prepaid', profile='simonly_prepaid'):
+        self.go_to_step3_prepaid(workflow, profile)
+        self.elementcheck('step_4', 'lastpage')
+        self.get_screenshot('succesfull', 'test_simonly_prepaid')
 
-    def test_handset_prepaid(self, workflow='prepaid', profile='simonly_prepaid_porting_clickandcollect'):
+    def test_handset_prepaid(self, workflow='prepaid', profile='handset_prepaid'):
         self.fail('not yet created')
 
 class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation, SimOnlyWorkflows, HandsetWorkflows):

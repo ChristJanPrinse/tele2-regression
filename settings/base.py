@@ -51,6 +51,9 @@ UI = {
         'tele2_zakelijk':'#mobile-providerSelectBoxItOptions li.selectboxit-option[data-val="TL2Z"]',
         'KPN':'#mobile-providerSelectBoxItOptions li.selectboxit-option[data-val="SPM"]',
     },
+    'prepaid': {
+        'button_order': '.button.btn_with_icon',
+    },
     'porting': {
         'ja': '#keepnumberSelectBoxItOptions li.selectboxit-option[data-val="1"]',
         'nee': '#keepnumberSelectBoxItOptions li.selectboxit-option[data-val="0"]',
