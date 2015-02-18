@@ -131,7 +131,7 @@ class Tele2Test(Extensions, unittest.TestCase):
             else:
                 self.get_screenshot(part, selector)
                 # if no selector is found, spit out an error
-                self.fail("Expected to find mandatory error on  %s field but did not find it." % selector)
+                self.fail("Expected to find mandatory error on %s field but did not find it." % selector)
         if ('popup' in settings.ERROR[part][selector]):
             count = 1
             while count > 0:
@@ -145,12 +145,21 @@ class Tele2Test(Extensions, unittest.TestCase):
             else:
                 self.get_screenshot(part, selector)
                 # if no selector is found, spit out an error
-                self.fail("Expected to find mandatory popup on  %s field but did not find it." % selector)
+                self.fail("Expected to find mandatory popup on %s field but did not find it." % selector)
         if ('text_popup' in settings.ERROR[part][selector]):
+            count = 1
+            while count > 0:
+                try:
+                    # check for the presence of the selector
+                    self.driver.find_element_by_css_selector(settings.ERROR[part][selector]['popup'])
+                    break
+                except:
+                    time.sleep(0.5)
+                    count -= 0.5
             element = self.driver.find_element_by_css_selector(settings.ERROR[part][selector]['popup'])
             if element.text != (settings.ERROR[part][selector]['text_popup']):
                 self.get_screenshot(part, selector)
-                self.fail("Expected to find text popup on  %s field but did not find it." % selector)
+                self.fail("Expected to find text popup on %s field but did not find it." % selector)
             else:
                 pass
 
@@ -182,8 +191,10 @@ class Tele2Test(Extensions, unittest.TestCase):
             if sys.argv[2].lower() == 'uat':
                 if workflow == 'sim_only':
                     self.driver.get('http://espresso-3g-uat.tele2.nl:11111/shop/mobiel/abonnement/sim-only')
+                    self.cookiebar_accept()
                 elif workflow == 'handset':
                     self.driver.get('http://espresso-3g-uat.tele2.nl:11111/shop')
+                    self.cookiebar_accept()
                     self.hover('overview_page', 'uat_handset')
                     self.elementcheck('overview_page', 'uat_hover_handset', click=True)
                 else:
