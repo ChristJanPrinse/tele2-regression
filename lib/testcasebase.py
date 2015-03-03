@@ -336,3 +336,9 @@ class Tele2Test(Extensions, unittest.TestCase):
     def tearDown(self):
         #   close the browser
         self.driver.close()
+
+    def textcheck(self, workflow, profile='default'):
+        current_text_1 = self.driver.find_element_by_css_selector('li.odd:nth-child(1) > p:nth-child(2)')
+        text_1 = self.driver.find_element_by_css_selector(settings.TEXT[profile]['text_1'])
+        print str(current_text_1.text)
+        self.assertEqual(current_text_1.text, text_1)

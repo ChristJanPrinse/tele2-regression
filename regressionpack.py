@@ -230,6 +230,13 @@ class PrepaidWorkflows(Tele2Test):
     def test_handset_prepaid(self, workflow='prepaid', profile='handset_prepaid'):
         self.fail('not yet created')
 
+class testing(Tele2Test):
+
+    def test_simonly_postpaid_porting_clickandcollect(self, workflow='sim_only', profile='simonly_postpaid_porting_delivery'):
+        self.go_to_step4(workflow, profile)
+        self.elementcheck('step_4', 'lastpage')
+        self.get_screenshot('succesfull', 'test_simonly_postpaid_porting_clickandcollect')
+
 class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation, SimOnlyWorkflows, HandsetWorkflows):
     def function():
         pass
@@ -237,6 +244,7 @@ class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation,
 '''
 --------------------------------------------------------------------------------------------------------------------------------
 '''
+
 #   create general folder
 now = datetime.now()
 date = '%s-%s-%s' % (now.month, now.day, now.year)

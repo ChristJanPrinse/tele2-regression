@@ -32,7 +32,7 @@ UI = {
         '1': '#daySelectBoxItOptions li.selectboxit-option[data-val="01"]',
     },
     'homepage': {
-        'button_banner': 'a.fld_button[title="Sim Only abonnement"]',
+        'button_banner': 'a.fld_button[title="Tele2 Sim Only"]',
     },
     'month': {
         '1': '#monthSelectBoxItOptions li.selectboxit-option[data-val="01"]',
@@ -113,6 +113,7 @@ UI = {
     },
     'step_4': {
         'lastpage': '#stepFour',
+        'text_1': '.odd .done ~ p',
     },
     'simcard_type': {
         'standaard': '.selectboxit-option[data-simname="Standaard- & Micro SIM"]',
@@ -120,9 +121,9 @@ UI = {
     },
     'overview_page': {
         'handset': '.default-state img.fld_image[title*="Samsung Galaxy S5 abonnement"]',
-        'hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s5/?color=black"]',
+        'hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s5/?color="]',
         'uat_handset': '.default-state img.fld_image[title*="Samsung Galaxy S4 abonnement"]',
-        'uat_hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s4/?color=black"]',
+        'uat_hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s4/?color="]',
         'prepaid_simonly': 'a.fld_link[title*="Sim Only"]',
     },
 }
@@ -248,16 +249,4 @@ ERROR = {
         },
 
     }
-}
-
-TEXT = {
-    'postpaid': {
-        'simonly': {
-            'porting': {
-                'click_and_collect':{
-                    'text_1': 'We hebben je bestelling goed ontvangen!',
-                },
-            },
-        },
-    },
 }
