@@ -76,6 +76,27 @@ class Extensions(object):
         M.close()
         M.logout()
 
+class PcChecker(unittest.TestCase):
+
+    def setUp(self):
+        fp = webdriver.FirefoxProfile()
+        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\addons\\Firebug.xpi')
+        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\addons\\Firefinder.xpi')
+        #   load up the remote driver and tell it to use Firefox
+        self.driver = webdriver.Remote(
+            command_executor="http://127.0.0.1:4444/wd/hub",
+            desired_capabilities=DesiredCapabilities.FIREFOX,
+            browser_profile=fp)
+        self.driver.implicitly_wait(10)
+        self.driver.set_window_size(1250,1000)
+ 
+        #   navigate to URL and log in as developer (since the script creates a new instance with clean cache)
+        self.driver.get('http://espresso.tele2.nl:20301/shop/thuis/dslng/samenstellen/')
+
+    def tearDown(self):
+        #   close the browser
+        self.driver.close()
+
 class Tele2Test(Extensions, unittest.TestCase):
 
     def cookiebar_accept(self):
@@ -200,7 +221,7 @@ class Tele2Test(Extensions, unittest.TestCase):
                 else:
                     self.get_screenshot('configure_page', workflow)
                     # if no selector is found, spit out an error
-                    self.fail('er gaat iets mis met de workflow selectie')
+                    self.fail('er gaat iets mis met de workflow selectie op UAT')
         else:
             self.hover('menu', 'link_mobiel')
             if workflow == 'sim_only':
@@ -212,6 +233,11 @@ class Tele2Test(Extensions, unittest.TestCase):
             elif workflow == 'simonly_prepaid':
                 self.elementcheck('menu', 'link_prepaid',click=True)
                 self.elementcheck('overview_page', 'prepaid_simonly', click=True)
+            elif workflow == 'handset_prepaid':
+                self.elementcheck('menu', 'link_prepaid',click=True)
+                self.elementcheck('overview_page', 'prepaid_handset', click=True)
+                self.hover('prepaid', 'link_handset')
+                self.elementcheck('prepaid', 'hover_handset', click=True)
             else:
                 self.get_screenshot('configure_page', workflow)
                 # if no selector is found, spit out an error
@@ -228,11 +254,9 @@ class Tele2Test(Extensions, unittest.TestCase):
             #   select internet bundle
             self.dropdownselector(profile, 'configure_page', 'select_internetbundle', 'bundles', 'internetbundle')
             self.dropdownselector(profile, 'configure_page', 'select_belbundle', 'bundles', 'belbundle')
-            if workflow == 'sim_only':
-                self.dropdownselector(profile, 'configure_page', 'select_simcard','simcard_type', 'simcard')
             self.get_screenshot('configure_page', 'succes')
             self.elementcheck('configure_page', 'button_order',click=True)
-        elif workflow == 'simonly_prepaid':
+        elif workflow == 'simonly_prepaid' or workflow == 'handset_prepaid':
             self.get_screenshot('configure_page', 'succes')
             self.elementcheck('prepaid', 'button_order', click=True)            
 
@@ -242,7 +266,7 @@ class Tele2Test(Extensions, unittest.TestCase):
         self.elementcheck('step_1', 'input_firstname',keys=settings.PROFILES[profile]['firstname'])
         self.elementcheck('step_1', 'input_lastname',keys=settings.PROFILES[profile]['lastname'])
         self.elementcheck('step_1', 'input_initials',keys=settings.PROFILES[profile]['initials'])
-        if not workflow == 'simonly_prepaid':
+        if workflow == 'sim_only' or workflow == 'handset':
             self.dropdownselector(profile, 'step_1', 'select_day', 'day', 'day')
             self.dropdownselector(profile, 'step_1', 'select_month', 'month', 'month')
             self.dropdownselector(profile, 'step_1', 'select_year', 'year', 'year')

@@ -227,17 +227,20 @@ class PrepaidWorkflows(Tele2Test):
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_simonly_prepaid')
 
-    def test_handset_prepaid(self, workflow='prepaid', profile='handset_prepaid'):
-        self.fail('not yet created')
+    def test_handset_prepaid(self, workflow='handset_prepaid', profile='handset_prepaid'):
+        self.go_to_step3_prepaid(workflow, profile)
+        self.elementcheck('step_4', 'lastpage')
+        self.get_screenshot('succesfull', 'test_simonly_prepaid')
 
 class testing(Tele2Test):
 
-    def test_simonly_postpaid_porting_clickandcollect(self, workflow='sim_only', profile='simonly_postpaid_porting_delivery'):
+
+    def test_handset_postpaid_noporting_delivery(self, workflow='handset', profile='handset_postpaid_noporting_delivery'):
         self.go_to_step4(workflow, profile)
         self.elementcheck('step_4', 'lastpage')
-        self.get_screenshot('succesfull', 'test_simonly_postpaid_porting_clickandcollect')
+        self.get_screenshot('succesfull', 'test_handset_postpaid_noporting_delivery')
 
-class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation, SimOnlyWorkflows, HandsetWorkflows):
+class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation, SimOnlyWorkflows, HandsetWorkflows, PrepaidWorkflows):
     def function():
         pass
 
@@ -257,7 +260,6 @@ if not os.path.exists(newpath):
 
 #   create report in testmap and run scripts
 path = 'H:\output\%s\%s\Report.html' % (test[0], test[1])
-#   path = 'H:\\output\\test\\Report.html'
 
 outfile = open(path, 'w')
 

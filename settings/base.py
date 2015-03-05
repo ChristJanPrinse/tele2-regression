@@ -51,8 +51,18 @@ UI = {
         'tele2_zakelijk':'#mobile-providerSelectBoxItOptions li.selectboxit-option[data-val="TL2Z"]',
         'KPN':'#mobile-providerSelectBoxItOptions li.selectboxit-option[data-val="SPM"]',
     },
+    'overview_page': {
+        'handset': '.default-state img.fld_image[title*="Samsung Galaxy S5 abonnement"]',
+        'hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s5/?color="]',
+        'uat_handset': '.default-state img.fld_image[title*="Samsung Galaxy S4 abonnement"]',
+        'uat_hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s4/?color=black"]',
+        'prepaid_simonly': 'a.fld_link[title*="Sim Only"]',
+        'prepaid_handset': 'a.fld_link[title*="telefoons"]',
+    },
     'prepaid': {
         'button_order': '.button.btn_with_icon',
+        'link_handset': '.default-state img.fld_image[title*="Nokia 113"]',
+        'hover_handset': 'a.preview-img-link[data-url*=nokia-113]',
     },
     'porting': {
         'ja': '#keepnumberSelectBoxItOptions li.selectboxit-option[data-val="1"]',
@@ -118,13 +128,6 @@ UI = {
     'simcard_type': {
         'standaard': '.selectboxit-option[data-simname="Standaard- & Micro SIM"]',
         'nano': '.selectboxit-option[data-simname="Nano SIM"]',
-    },
-    'overview_page': {
-        'handset': '.default-state img.fld_image[title*="Samsung Galaxy S5 abonnement"]',
-        'hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s5/?color="]',
-        'uat_handset': '.default-state img.fld_image[title*="Samsung Galaxy S4 abonnement"]',
-        'uat_hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s4/?color="]',
-        'prepaid_simonly': 'a.fld_link[title*="Sim Only"]',
     },
 }
 
