@@ -76,27 +76,6 @@ class Extensions(object):
         M.close()
         M.logout()
 
-class PcChecker(unittest.TestCase):
-
-    def setUp(self):
-        fp = webdriver.FirefoxProfile()
-        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\addons\\Firebug.xpi')
-        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\addons\\Firefinder.xpi')
-        #   load up the remote driver and tell it to use Firefox
-        self.driver = webdriver.Remote(
-            command_executor="http://127.0.0.1:4444/wd/hub",
-            desired_capabilities=DesiredCapabilities.FIREFOX,
-            browser_profile=fp)
-        self.driver.implicitly_wait(10)
-        self.driver.set_window_size(1250,1000)
- 
-        #   navigate to URL and log in as developer (since the script creates a new instance with clean cache)
-        self.driver.get('http://espresso.tele2.nl:20301/shop/thuis/dslng/samenstellen/')
-
-    def tearDown(self):
-        #   close the browser
-        self.driver.close()
-
 class Tele2Test(Extensions, unittest.TestCase):
 
     def cookiebar_accept(self):
@@ -344,8 +323,8 @@ class Tele2Test(Extensions, unittest.TestCase):
 
     def setUp(self):
         fp = webdriver.FirefoxProfile()
-        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\addons\\Firebug.xpi')
-        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\addons\\Firefinder.xpi')
+        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\mobile\\addons\\Firebug.xpi')
+        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\mobile\\addons\\Firefinder.xpi')
         #   load up the remote driver and tell it to use Firefox
         self.driver = webdriver.Remote(
             command_executor="http://127.0.0.1:4444/wd/hub",
