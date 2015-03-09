@@ -32,7 +32,7 @@ UI = {
         '1': '#daySelectBoxItOptions li.selectboxit-option[data-val="01"]',
     },
     'homepage': {
-        'button_banner': 'a.fld_button[title="Sim Only abonnement"]',
+        'button_banner': 'a.fld_button[title="Tele2 Sim Only"]',
     },
     'month': {
         '1': '#monthSelectBoxItOptions li.selectboxit-option[data-val="01"]',
@@ -51,8 +51,18 @@ UI = {
         'tele2_zakelijk':'#mobile-providerSelectBoxItOptions li.selectboxit-option[data-val="TL2Z"]',
         'KPN':'#mobile-providerSelectBoxItOptions li.selectboxit-option[data-val="SPM"]',
     },
+    'overview_page': {
+        'handset': '.default-state img.fld_image[title*="Samsung Galaxy S5 abonnement"]',
+        'hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s5/?color="]',
+        'uat_handset': '.default-state img.fld_image[title*="Samsung Galaxy S4 abonnement"]',
+        'uat_hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s4/?color=black"]',
+        'prepaid_simonly': 'a.fld_link[title*="Sim Only"]',
+        'prepaid_handset': 'a.fld_link[title*="telefoons"]',
+    },
     'prepaid': {
         'button_order': '.button.btn_with_icon',
+        'link_handset': '.default-state img.fld_image[title*="Nokia 113"]',
+        'hover_handset': 'a.preview-img-link[data-url*=nokia-113]',
     },
     'porting': {
         'ja': '#keepnumberSelectBoxItOptions li.selectboxit-option[data-val="1"]',
@@ -113,15 +123,11 @@ UI = {
     },
     'step_4': {
         'lastpage': '#stepFour',
+        'text_1': '.odd .done ~ p',
     },
     'simcard_type': {
         'standaard': '.selectboxit-option[data-simname="Standaard- & Micro SIM"]',
         'nano': '.selectboxit-option[data-simname="Nano SIM"]',
-    },
-    'overview_page': {
-        'handset': '.default-state img.fld_image[title*="Samsung Galaxy S5 abonnement"]',
-        'hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s5/?color=white"]',
-        'prepaid_simonly': 'a.fld_link[title*="Sim Only"]',
     },
 }
 
@@ -246,16 +252,4 @@ ERROR = {
         },
 
     }
-}
-
-TEXT = {
-    'postpaid': {
-        'simonly': {
-            'porting': {
-                'click_and_collect':{
-                    'text_1': 'We hebben je bestelling goed ontvangen!',
-                },
-            },
-        },
-    },
 }

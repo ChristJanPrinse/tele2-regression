@@ -6,6 +6,7 @@ import unittest
 import time
 import settings
 import os
+import sys
 
 from datetime import datetime
 from random import randint
@@ -130,7 +131,7 @@ class Tele2Test(Extensions, unittest.TestCase):
             else:
                 self.get_screenshot(part, selector)
                 # if no selector is found, spit out an error
-                self.fail("Expected to find mandatory error on  %s field but did not find it." % selector)
+                self.fail("Expected to find mandatory error on %s field but did not find it." % selector)
         if ('popup' in settings.ERROR[part][selector]):
             count = 1
             while count > 0:
@@ -144,12 +145,21 @@ class Tele2Test(Extensions, unittest.TestCase):
             else:
                 self.get_screenshot(part, selector)
                 # if no selector is found, spit out an error
-                self.fail("Expected to find mandatory popup on  %s field but did not find it." % selector)
+                self.fail("Expected to find mandatory popup on %s field but did not find it." % selector)
         if ('text_popup' in settings.ERROR[part][selector]):
+            count = 1
+            while count > 0:
+                try:
+                    # check for the presence of the selector
+                    self.driver.find_element_by_css_selector(settings.ERROR[part][selector]['popup'])
+                    break
+                except:
+                    time.sleep(0.5)
+                    count -= 0.5
             element = self.driver.find_element_by_css_selector(settings.ERROR[part][selector]['popup'])
             if element.text != (settings.ERROR[part][selector]['text_popup']):
                 self.get_screenshot(part, selector)
-                self.fail("Expected to find text popup on  %s field but did not find it." % selector)
+                self.fail("Expected to find text popup on %s field but did not find it." % selector)
             else:
                 pass
 
@@ -177,20 +187,40 @@ class Tele2Test(Extensions, unittest.TestCase):
 
     def go_to_configpage(self, workflow, profile='default'):
         self.cookiebar_accept()
-        self.hover('menu', 'link_mobiel')
-        if workflow == 'sim_only':
-            self.elementcheck('menu', 'link_sim_only',click=True)
-        elif workflow == 'handset':
-            self.elementcheck('menu', 'link_handset',click=True)
-            self.hover('overview_page', 'handset')
-            self.elementcheck('overview_page', 'hover_handset', click=True)
-        elif workflow == 'simonly_prepaid':
-            self.elementcheck('menu', 'link_prepaid',click=True)
-            self.elementcheck('overview_page', 'prepaid_simonly', click=True)
+        if len(sys.argv) > 2:
+            if sys.argv[2].lower() == 'uat':
+                if workflow == 'sim_only':
+                    self.driver.get('http://espresso-3g-uat.tele2.nl:11111/shop/mobiel/abonnement/sim-only')
+                    self.cookiebar_accept()
+                elif workflow == 'handset':
+                    self.driver.get('http://espresso-3g-uat.tele2.nl:11111/shop')
+                    self.cookiebar_accept()
+                    self.hover('overview_page', 'uat_handset')
+                    self.elementcheck('overview_page', 'uat_hover_handset', click=True)
+                else:
+                    self.get_screenshot('configure_page', workflow)
+                    # if no selector is found, spit out an error
+                    self.fail('er gaat iets mis met de workflow selectie op UAT')
         else:
-            self.get_screenshot('configure_page', workflow)
-            # if no selector is found, spit out an error
-            self.fail('er gaat iets mis met de workflow selectie')
+            self.hover('menu', 'link_mobiel')
+            if workflow == 'sim_only':
+                self.elementcheck('menu', 'link_sim_only',click=True)
+            elif workflow == 'handset':
+                self.elementcheck('menu', 'link_handset',click=True)
+                self.hover('overview_page', 'handset')
+                self.elementcheck('overview_page', 'hover_handset', click=True)
+            elif workflow == 'simonly_prepaid':
+                self.elementcheck('menu', 'link_prepaid',click=True)
+                self.elementcheck('overview_page', 'prepaid_simonly', click=True)
+            elif workflow == 'handset_prepaid':
+                self.elementcheck('menu', 'link_prepaid',click=True)
+                self.elementcheck('overview_page', 'prepaid_handset', click=True)
+                self.hover('prepaid', 'link_handset')
+                self.elementcheck('prepaid', 'hover_handset', click=True)
+            else:
+                self.get_screenshot('configure_page', workflow)
+                # if no selector is found, spit out an error
+                self.fail('er gaat iets mis met de workflow selectie')
 
     def go_to_step1(self, workflow, profile='default'):
         self.go_to_configpage(workflow, profile)
@@ -203,11 +233,9 @@ class Tele2Test(Extensions, unittest.TestCase):
             #   select internet bundle
             self.dropdownselector(profile, 'configure_page', 'select_internetbundle', 'bundles', 'internetbundle')
             self.dropdownselector(profile, 'configure_page', 'select_belbundle', 'bundles', 'belbundle')
-            if workflow == 'sim_only':
-                self.dropdownselector(profile, 'configure_page', 'select_simcard','simcard_type', 'simcard')
             self.get_screenshot('configure_page', 'succes')
             self.elementcheck('configure_page', 'button_order',click=True)
-        elif workflow == 'simonly_prepaid':
+        elif workflow == 'simonly_prepaid' or workflow == 'handset_prepaid':
             self.get_screenshot('configure_page', 'succes')
             self.elementcheck('prepaid', 'button_order', click=True)            
 
@@ -217,7 +245,7 @@ class Tele2Test(Extensions, unittest.TestCase):
         self.elementcheck('step_1', 'input_firstname',keys=settings.PROFILES[profile]['firstname'])
         self.elementcheck('step_1', 'input_lastname',keys=settings.PROFILES[profile]['lastname'])
         self.elementcheck('step_1', 'input_initials',keys=settings.PROFILES[profile]['initials'])
-        if not workflow == 'simonly_prepaid':
+        if workflow == 'sim_only' or workflow == 'handset':
             self.dropdownselector(profile, 'step_1', 'select_day', 'day', 'day')
             self.dropdownselector(profile, 'step_1', 'select_month', 'month', 'month')
             self.dropdownselector(profile, 'step_1', 'select_year', 'year', 'year')
@@ -295,8 +323,8 @@ class Tele2Test(Extensions, unittest.TestCase):
 
     def setUp(self):
         fp = webdriver.FirefoxProfile()
-        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\tele2 regression\\addons\\Firebug.xpi')
-        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\tele2 regression\\addons\\Firefinder.xpi')
+        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\mobile\\addons\\Firebug.xpi')
+        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\mobile\\addons\\Firefinder.xpi')
         #   load up the remote driver and tell it to use Firefox
         self.driver = webdriver.Remote(
             command_executor="http://127.0.0.1:4444/wd/hub",
@@ -308,6 +336,12 @@ class Tele2Test(Extensions, unittest.TestCase):
         #   navigate to URL and log in as developer (since the script creates a new instance with clean cache)
         self.driver.get('https://www.tele2.nl/')
 
-    '''def tearDown(self):
+    def tearDown(self):
         #   close the browser
-        self.driver.close()'''
+        self.driver.close()
+
+    def textcheck(self, workflow, profile='default'):
+        current_text_1 = self.driver.find_element_by_css_selector('li.odd:nth-child(1) > p:nth-child(2)')
+        text_1 = self.driver.find_element_by_css_selector(settings.TEXT[profile]['text_1'])
+        print str(current_text_1.text)
+        self.assertEqual(current_text_1.text, text_1)
