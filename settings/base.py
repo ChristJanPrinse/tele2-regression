@@ -52,9 +52,9 @@ UI = {
         'KPN':'#mobile-providerSelectBoxItOptions li.selectboxit-option[data-val="SPM"]',
     },
     'overview_page': {
-        'handset': '.default-state img.fld_image[title*="Samsung Galaxy S5 abonnement"]',
-        'hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s5/?color="]',
-        'uat_handset': '.default-state img.fld_image[title*="Samsung Galaxy S4 abonnement"]',
+        'handset': '.phones_wrapper.abonnement > article:nth-child(1)',
+        'hover_handset': 'a.preview-img-link',
+        'uat_handset': '#product-list-item-3249 > div:nth-child(2) > div:nth-child(1) > aside:nth-child(5) > div:nth-child(1)',
         'uat_hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s4/?color=black"]',
         'prepaid_simonly': 'a.fld_link[title*="Sim Only"]',
         'prepaid_handset': 'a.fld_link[title*="telefoons"]',

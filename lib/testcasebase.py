@@ -207,8 +207,10 @@ class Tele2Test(Extensions, unittest.TestCase):
                 self.elementcheck('menu', 'link_sim_only',click=True)
             elif workflow == 'handset':
                 self.elementcheck('menu', 'link_handset',click=True)
-                self.hover('overview_page', 'handset')
-                self.elementcheck('overview_page', 'hover_handset', click=True)
+                handset = '.phones_wrapper.abonnement > article:nth-child(%s)' % randint(1, 9)
+                self.hover_article(handset)
+                handset = '%s %s' % (handset, 'a.preview-img-link')
+                self.driver.find_element_by_css_selector(handset).click()
             elif workflow == 'simonly_prepaid':
                 self.elementcheck('menu', 'link_prepaid',click=True)
                 self.elementcheck('overview_page', 'prepaid_simonly', click=True)
@@ -255,7 +257,6 @@ class Tele2Test(Extensions, unittest.TestCase):
         self.elementcheck('step_1', 'input_e-mail',keys=settings.PROFILES[profile]['email'])
         self.elementcheck('step_1', 'input_repeat_email',keys=settings.PROFILES[profile]['repeat_email'])
         count = 0
-        street = settings.PROFILES[profile]['streetname']
         while not (self.driver.find_element_by_css_selector('#street').get_attribute("value") == settings.PROFILES[profile]['streetname']) :
             if count >= 50:
                 self.get_screenshot('step_1', 'input_street')
@@ -287,7 +288,10 @@ class Tele2Test(Extensions, unittest.TestCase):
     def go_to_step4(self, workflow, profile='default'):
         self.go_to_step3(workflow, profile)
         if (settings.PROFILES[profile]['delivery']):
-            self.elementcheck('step_3', 'ratio_delivery', click=settings.PROFILES[profile]['delivery'])
+            try:
+                self.driver.find_element_by_css_selector('.request-delivery').click()
+            except NoSuchElementException:
+                pass
         if (settings.PROFILES[profile]['click_collect']):
             self.elementcheck('step_3', 'ratio_click_collect', click=settings.PROFILES[profile]['click_collect'])
             count = 0
@@ -308,12 +312,18 @@ class Tele2Test(Extensions, unittest.TestCase):
                     count += 1
         self.elementcheck('step_3', 'terms', click=True)
         self.elementcheck('step_3', 'directdebid', click=True)
+        self.get_screenshot('step_3', 'succes')
         self.elementcheck('step_3', 'button_next_step', click=True)
 
     def go_to_step3_prepaid(self, workflow, profile='default'):
         self.go_to_step2(workflow, profile)
         self.elementcheck('step_3', 'terms', click=True)
         self.elementcheck('step_3', 'button_next_step', click=True)
+
+    def hover_article(self, selector):
+        add = self.driver.find_element_by_css_selector(selector)
+        Hover = ActionChains(self.driver).move_to_element(add)
+        Hover.perform()
 
     def hover (self, part, selector):
         locator = settings.UI[part][selector]
@@ -336,9 +346,9 @@ class Tele2Test(Extensions, unittest.TestCase):
         #   navigate to URL and log in as developer (since the script creates a new instance with clean cache)
         self.driver.get('https://www.tele2.nl/')
 
-    def tearDown(self):
+    '''def tearDown(self):
         #   close the browser
-        self.driver.close()
+        self.driver.close()'''
 
     def textcheck(self, workflow, profile='default'):
         current_text_1 = self.driver.find_element_by_css_selector('li.odd:nth-child(1) > p:nth-child(2)')
