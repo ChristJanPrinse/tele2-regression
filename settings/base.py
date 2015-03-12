@@ -54,8 +54,8 @@ UI = {
     'overview_page': {
         'handset': '.phones_wrapper.abonnement > article:nth-child(1)',
         'hover_handset': 'a.preview-img-link',
-        'uat_handset': '#product-list-item-3249 > div:nth-child(2) > div:nth-child(1) > aside:nth-child(5) > div:nth-child(1)',
-        'uat_hover_handset': 'a.preview-img-link[data-url*="samsung-galaxy-s4/?color=black"]',
+        'uat_handset': '.phones_wrapper.abonnement > article:nth-child(1)',
+        'uat_hover_handset': 'a.preview-img-link',
         'prepaid_simonly': 'a.fld_link[title*="Sim Only"]',
         'prepaid_handset': 'a.fld_link[title*="telefoons"]',
     },

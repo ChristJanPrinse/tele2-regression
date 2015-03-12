@@ -7,6 +7,45 @@ from datetime import datetime
 from lib.testcasebase import Tele2Test, unittest, settings, test
 from selenium.common.exceptions import NoSuchElementException
 
+'''
+--------------------------------------------------------------------------------------------------------------------------------
+                TEST SUMMARY
+--------------------------------------------------------------------------------------------------------------------------------
+'''    
+class HandsetWorkflows(Tele2Test):
+
+    def test_handset_postpaid_noporting_delivery(self, workflow='handset', profile='handset_postpaid_noporting_delivery'):
+        self.go_to_step4(workflow, profile)
+        self.elementcheck('step_4', 'lastpage')
+        self.get_screenshot('succesfull', 'test_handset_postpaid_noporting_delivery')
+
+    def test_handset_postpaid_porting_delivery(self, workflow='handset', profile='handset_postpaid_porting_delivery'):
+        self.go_to_step4(workflow, profile)
+        self.elementcheck('step_4', 'lastpage')
+        self.get_screenshot('succesfull', 'test_handset_postpaid_porting_delivery')
+
+    def test_handset_postpaid_noporting_clickandcollect(self, workflow='handset', profile='handset_postpaid_noporting_clickandcollect'):
+        self.go_to_step4(workflow, profile)
+        self.elementcheck('step_4', 'lastpage')
+        self.get_screenshot('succesfull', 'test_handset_postpaid_noporting_clickandcollect')
+
+    def test_handset_postpaid_porting_clickandcollect(self, workflow='handset', profile='handset_postpaid_porting_clickandcollect'):
+        self.go_to_step4(workflow, profile)
+        self.elementcheck('step_4', 'lastpage')
+        self.get_screenshot('succesfull', 'test_handset_postpaid_porting_clickandcollect')
+
+class PrepaidWorkflows(Tele2Test):
+
+    def test_simonly_prepaid(self, workflow='simonly_prepaid', profile='simonly_prepaid'):
+        self.go_to_step3_prepaid(workflow, profile)
+        self.elementcheck('step_4', 'lastpage')
+        self.get_screenshot('succesfull', 'test_simonly_prepaid')
+
+    def test_handset_prepaid(self, workflow='handset_prepaid', profile='handset_prepaid'):
+        self.go_to_step3_prepaid(workflow, profile)
+        self.elementcheck('step_4', 'lastpage')
+        self.get_screenshot('succesfull', 'test_simonly_prepaid')
+
 class SimOnlyFieldCorrection(Tele2Test):
 
     def test_firstletter_field_correction(self, workflow='sim_only'):
@@ -199,42 +238,7 @@ class SimOnlyWorkflows(Tele2Test):
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_simonly_postpaid_porting_clickandcollect')
 
-class HandsetWorkflows(Tele2Test):
-
-    def test_handset_postpaid_noporting_delivery(self, workflow='handset', profile='handset_postpaid_noporting_delivery'):
-        self.go_to_step4(workflow, profile)
-        self.elementcheck('step_4', 'lastpage')
-        self.get_screenshot('succesfull', 'test_handset_postpaid_noporting_delivery')
-
-    def test_handset_postpaid_porting_delivery(self, workflow='handset', profile='handset_postpaid_porting_delivery'):
-        self.go_to_step4(workflow, profile)
-        self.elementcheck('step_4', 'lastpage')
-        self.get_screenshot('succesfull', 'test_handset_postpaid_porting_delivery')
-
-    def test_handset_postpaid_noporting_clickandcollect(self, workflow='handset', profile='handset_postpaid_noporting_clickandcollect'):
-        self.go_to_step4(workflow, profile)
-        self.elementcheck('step_4', 'lastpage')
-        self.get_screenshot('succesfull', 'test_handset_postpaid_noporting_clickandcollect')
-
-    def test_handset_postpaid_porting_clickandcollect(self, workflow='handset', profile='handset_postpaid_porting_clickandcollect'):
-        self.go_to_step4(workflow, profile)
-        self.elementcheck('step_4', 'lastpage')
-        self.get_screenshot('succesfull', 'test_handset_postpaid_porting_clickandcollect')
-
-class PrepaidWorkflows(Tele2Test):
-
-    def test_simonly_prepaid(self, workflow='simonly_prepaid', profile='simonly_prepaid'):
-        self.go_to_step3_prepaid(workflow, profile)
-        self.elementcheck('step_4', 'lastpage')
-        self.get_screenshot('succesfull', 'test_simonly_prepaid')
-
-    def test_handset_prepaid(self, workflow='handset_prepaid', profile='handset_prepaid'):
-        self.go_to_step3_prepaid(workflow, profile)
-        self.elementcheck('step_4', 'lastpage')
-        self.get_screenshot('succesfull', 'test_simonly_prepaid')
-
-class testing(Tele2Test):
-
+class Testing(Tele2Test):
 
     def test_handset_postpaid_noporting_delivery(self, workflow='handset', profile='handset_postpaid_noporting_delivery'):
         self.go_to_step4(workflow, profile)
@@ -246,6 +250,8 @@ class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation,
         pass
 
 '''
+--------------------------------------------------------------------------------------------------------------------------------
+                TEST GATHERER AND RUNNER - REPORT CREATING
 --------------------------------------------------------------------------------------------------------------------------------
 '''
 

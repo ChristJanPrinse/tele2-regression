@@ -216,9 +216,10 @@ class Tele2Test(Extensions, unittest.TestCase):
                 self.elementcheck('overview_page', 'prepaid_simonly', click=True)
             elif workflow == 'handset_prepaid':
                 self.elementcheck('menu', 'link_prepaid',click=True)
-                self.elementcheck('overview_page', 'prepaid_handset', click=True)
-                self.hover('prepaid', 'link_handset')
-                self.elementcheck('prepaid', 'hover_handset', click=True)
+                handset = '.phones_wrapper.abonnement > article:nth-child(%s)' % randint(1, 9)
+                self.hover_article(handset)
+                handset = '%s %s' % (handset, 'a.preview-img-link')
+                self.driver.find_element_by_css_selector(handset).click()
             else:
                 self.get_screenshot('configure_page', workflow)
                 # if no selector is found, spit out an error
