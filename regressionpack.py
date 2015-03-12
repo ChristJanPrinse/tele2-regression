@@ -11,7 +11,8 @@ from selenium.common.exceptions import NoSuchElementException
 --------------------------------------------------------------------------------------------------------------------------------
                 TEST SUMMARY
 --------------------------------------------------------------------------------------------------------------------------------
-'''    
+'''
+
 class HandsetWorkflows(Tele2Test):
 
     def test_handset_postpaid_noporting_delivery(self, workflow='handset', profile='handset_postpaid_noporting_delivery'):
@@ -33,6 +34,20 @@ class HandsetWorkflows(Tele2Test):
         self.go_to_step4(workflow, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_porting_clickandcollect')
+
+class IBANnumberGenerator(Tele2Test):
+
+    def test_create_correct_IBANnumber(self, workflow='handset'):
+        pass
+
+    def test_create_incorrect_IBANnumber(self, workflow='handset'):
+        pass
+       
+    def test_create_incorrect_IBANnumber_backend(self, workflow='sim_only'):
+        pass 
+
+    def test_create_incorrect_IBANnumber_without_elevenproof(self, workflow='sim_only'):
+        pass
 
 class PrepaidWorkflows(Tele2Test):
 
