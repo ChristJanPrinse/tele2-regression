@@ -93,8 +93,9 @@ class SimOnlyFieldMandatory(Tele2Test):
         self.elementcheck('step_2', 'button_next_step', click=True)
         self.errorcheck('step_2', 'documenttype')
 
-    def test_documentnumber_mandatory(self, workflow='sim_only'):
+    def test_documentnumber_mandatory(self, workflow='sim_only', profile='default'):
         self.go_to_step2(workflow)
+        self.dropdownselector(profile, 'step_2', 'select_document_type', 'document_type', 'document_type')              
         self.elementcheck('step_2', 'button_next_step', click=True)
         self.errorcheck('step_2', 'documentnumber')
 
