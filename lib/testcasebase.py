@@ -347,9 +347,9 @@ class Tele2Test(Extensions, unittest.TestCase):
         #   navigate to URL and log in as developer (since the script creates a new instance with clean cache)
         self.driver.get('https://www.tele2.nl/')
 
-    def tearDown(self):
+    '''def tearDown(self):
         #   close the browser
-        self.driver.close()
+        self.driver.close()'''
 
     def textcheck(self, workflow, profile='default'):
         current_text_1 = self.driver.find_element_by_css_selector('li.odd:nth-child(1) > p:nth-child(2)')
