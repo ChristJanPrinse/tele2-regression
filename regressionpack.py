@@ -11,8 +11,7 @@ from selenium.common.exceptions import NoSuchElementException
 --------------------------------------------------------------------------------------------------------------------------------
                 TEST SUMMARY
 --------------------------------------------------------------------------------------------------------------------------------
-'''
-
+'''    
 class HandsetWorkflows(Tele2Test):
 
     def test_handset_postpaid_noporting_delivery(self, workflow='handset', profile='handset_postpaid_noporting_delivery'):
@@ -207,14 +206,6 @@ class SimOnlyFieldValidation(Tele2Test):
         self.go_to_step2(workflow)
         self.field_validation('step_2', 'input_IBANnumber', 'select_services', settings.IBAN, 'incorrect', 'IBANnumber')
 
-    def test_IBANgenerator_correct(self, workflow='sim_only', profile="default"):
-        self.go_to_step2(workflow, profile)
-        self.IBAN_generator(profile, 'generator_input_correct', False)
-        
-    def test_IBANgenerator_incorrect(self, workflow='sim_only', profile='default'):
-        self.go_to_step2(workflow, profile)
-        self.IBAN_generator(profile, 'generator_input_incorrect', True)
-
     def test_document_number_incorrect(self, workflow='sim_only', profile='default'):
         self.go_to_step2(workflow)
         self.dropdownselector(profile, 'step_2', 'select_document_type', 'document_type', 'document_type')              
@@ -249,12 +240,13 @@ class SimOnlyWorkflows(Tele2Test):
 
 class Testing(Tele2Test):
 
-    def function(self):
-        pass
+    def test_handset_postpaid_noporting_delivery(self, workflow='handset', profile='handset_postpaid_noporting_delivery'):
+        self.go_to_step4(workflow, profile)
+        self.elementcheck('step_4', 'lastpage')
+        self.get_screenshot('succesfull', 'test_handset_postpaid_noporting_delivery')
 
 class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation, SimOnlyWorkflows, HandsetWorkflows, PrepaidWorkflows):
-    
-    def function(self):
+    def function():
         pass
 
 '''
@@ -264,8 +256,7 @@ class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation,
 '''
 if __name__ == "__main__":
     unittest.main(verbosity=2)
-'''
-#   create general folder
+'''#   create general folder
 now = datetime.now()
 date = '%s-%s-%s' % (now.month, now.day, now.year)
 time = '%s;%s' % (now.hour, now.minute)
