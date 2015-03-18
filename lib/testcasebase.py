@@ -324,6 +324,24 @@ class Tele2Test(Extensions, unittest.TestCase):
         Hover = ActionChains(self.driver).move_to_element(add)
         Hover.perform()
 
+    def IBAN_generator(self, profile, entry_type, error_message):
+        for keys in settings.IBAN[entry_type].split(','):
+            length = 18 - len(keys)
+            self.elementcheck('step_2', 'link_ibanlink', click=True)
+            self.dropdownselector(profile, 'step_2', 'select_bank', 'bank','bank')
+            self.elementcheck('step_2', 'input_bankaccount', keys=keys)
+            IBANfield_entry = self.driver.find_element_by_css_selector('#ibannummer').get_attribute('value')[length:]
+            if entry_type == 'backend_validation_incorrect':
+                length = 19 - len(keys)
+                IBANfield_entry = self.driver.find_element_by_css_selector('#ibannummer').get_attribute('value')[length:]
+                self.assertEqual(IBANfield_entry, keys)
+                self.elementcheck('step_2', 'button_choose_IBAN', click=True)
+            elif error_message == False:
+                self.assertEqual(IBANfield_entry, keys)
+            elif error_message == True:
+                self.assertEqual(IBANfield_entry, '')
+            self.driver.find_element_by_css_selector('#bban').clear()
+
     def setUp(self):
         fp = webdriver.FirefoxProfile()
         fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\mobile\\addons\\Firebug.xpi')
@@ -342,9 +360,3 @@ class Tele2Test(Extensions, unittest.TestCase):
     def tearDown(self):
         #   close the browser
         self.driver.close()
-
-    def textcheck(self, workflow, profile='default'):
-        current_text_1 = self.driver.find_element_by_css_selector('li.odd:nth-child(1) > p:nth-child(2)')
-        text_1 = self.driver.find_element_by_css_selector(settings.TEXT[profile]['text_1'])
-        print str(current_text_1.text)
-        self.assertEqual(current_text_1.text, text_1)

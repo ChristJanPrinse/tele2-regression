@@ -202,6 +202,14 @@ class SimOnlyFieldValidation(Tele2Test):
         self.go_to_step1(workflow)
         self.field_validation('step_1', 'input_repeat_email', 'input_firstname', settings.EMAIL, 'incorrect', 'repeat_email')
 
+    def test_IBANgenerator_correct(self, workflow='sim_only', profile="default"):
+        self.go_to_step2(workflow, profile)
+        self.IBAN_generator(profile, 'generator_input_correct', False)
+
+    def test_IBANgenerator_incorrect(self, workflow='sim_only', profile='default'):
+        self.go_to_step2(workflow, profile)
+        self.IBAN_generator(profile, 'generator_input_incorrect', True)
+
     def test_IBAN_field_incorrect(self, workflow='sim_only'):
         self.go_to_step2(workflow)
         self.field_validation('step_2', 'input_IBANnumber', 'select_services', settings.IBAN, 'incorrect', 'IBANnumber')
@@ -240,10 +248,8 @@ class SimOnlyWorkflows(Tele2Test):
 
 class Testing(Tele2Test):
 
-    def test_handset_postpaid_noporting_delivery(self, workflow='handset', profile='handset_postpaid_noporting_delivery'):
-        self.go_to_step4(workflow, profile)
-        self.elementcheck('step_4', 'lastpage')
-        self.get_screenshot('succesfull', 'test_handset_postpaid_noporting_delivery')
+    def function(self):
+        pass
 
 class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation, SimOnlyWorkflows, HandsetWorkflows, PrepaidWorkflows):
     def function():
