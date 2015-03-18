@@ -162,8 +162,7 @@ class Tele2Test(Extensions, unittest.TestCase):
             self.driver.find_element_by_css_selector(settings.UI[part][selector]).clear()
 
     def get_screenshot(self, part, selector):
-        pass
-        '''global test
+        global test
         testcase = unittest.TestCase.id(self)
         testcase = testcase.split('.')[2]
         newpath = 'H:\output\%s' % test[0]
@@ -175,8 +174,8 @@ class Tele2Test(Extensions, unittest.TestCase):
         newpath = 'H:\output\%s\%s\%s' % (test[0], test[1], testcase)
         if not os.path.exists(newpath):
             os.mkdir('H:\output\%s\%s\%s' % (test[0], test[1], testcase))
-        self.driver.get_screenshot_as_file('H:\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))'''
-
+        self.driver.get_screenshot_as_file('H:\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))
+        
     def go_to_configpage(self, workflow, profile='default'):
         self.cookiebar_accept()
         if len(sys.argv) > 2:
@@ -340,9 +339,9 @@ class Tele2Test(Extensions, unittest.TestCase):
         #   navigate to URL and log in as developer (since the script creates a new instance with clean cache)
         self.driver.get('https://www.tele2.nl/')
 
-    '''def tearDown(self):
+    def tearDown(self):
         #   close the browser
-        self.driver.close()'''
+        self.driver.close()
 
     def textcheck(self, workflow, profile='default'):
         current_text_1 = self.driver.find_element_by_css_selector('li.odd:nth-child(1) > p:nth-child(2)')
