@@ -147,15 +147,6 @@ class Tele2Test(Extensions, unittest.TestCase):
                 # if no selector is found, spit out an error
                 self.fail("Expected to find mandatory popup on %s field but did not find it." % selector)
         if ('text_popup' in settings.ERROR[part][selector]):
-            count = 1
-            while count > 0:
-                try:
-                    # check for the presence of the selector
-                    self.driver.find_element_by_css_selector(settings.ERROR[part][selector]['popup'])
-                    break
-                except:
-                    time.sleep(0.5)
-                    count -= 0.5
             element = self.driver.find_element_by_css_selector(settings.ERROR[part][selector]['popup'])
             if element.text != (settings.ERROR[part][selector]['text_popup']):
                 self.get_screenshot(part, selector)
@@ -171,7 +162,8 @@ class Tele2Test(Extensions, unittest.TestCase):
             self.driver.find_element_by_css_selector(settings.UI[part][selector]).clear()
 
     def get_screenshot(self, part, selector):
-        global test
+        pass
+        '''global test
         testcase = unittest.TestCase.id(self)
         testcase = testcase.split('.')[2]
         newpath = 'H:\output\%s' % test[0]
@@ -183,7 +175,7 @@ class Tele2Test(Extensions, unittest.TestCase):
         newpath = 'H:\output\%s\%s\%s' % (test[0], test[1], testcase)
         if not os.path.exists(newpath):
             os.mkdir('H:\output\%s\%s\%s' % (test[0], test[1], testcase))
-        self.driver.get_screenshot_as_file('H:\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))
+        self.driver.get_screenshot_as_file('H:\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))'''
 
     def go_to_configpage(self, workflow, profile='default'):
         self.cookiebar_accept()
@@ -347,9 +339,9 @@ class Tele2Test(Extensions, unittest.TestCase):
         #   navigate to URL and log in as developer (since the script creates a new instance with clean cache)
         self.driver.get('https://www.tele2.nl/')
 
-    def tearDown(self):
+    '''def tearDown(self):
         #   close the browser
-        self.driver.close()
+        self.driver.close()'''
 
     def textcheck(self, workflow, profile='default'):
         current_text_1 = self.driver.find_element_by_css_selector('li.odd:nth-child(1) > p:nth-child(2)')

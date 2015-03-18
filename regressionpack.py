@@ -254,8 +254,9 @@ class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation,
                 TEST GATHERER AND RUNNER - REPORT CREATING
 --------------------------------------------------------------------------------------------------------------------------------
 '''
-
-#   create general folder
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
+'''#   create general folder
 now = datetime.now()
 date = '%s-%s-%s' % (now.month, now.day, now.year)
 time = '%s;%s' % (now.hour, now.minute)
@@ -277,4 +278,4 @@ HTMLTestRunner.HTMLTestRunner(
                 title='Test Report',
                 description='Here is the overview of the testrun.',
                 verbosity = 2
-                ).run(suite)
+                ).run(suite)'''
