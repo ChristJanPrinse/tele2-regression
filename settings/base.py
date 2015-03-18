@@ -99,6 +99,8 @@ UI = {
     },
     'step_2': {
         'button_next_step': '#btn_step_two',
+        'button_choose_IBAN': '#btnChooseIban',
+        'field_IBANnumber': '#ibannummer',
         'input_bankaccount': '#bban',
         'input_documentnumber': '#docnumber',
         'input_IBANnumber': '#rekeningnummer',

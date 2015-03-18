@@ -35,20 +35,6 @@ class HandsetWorkflows(Tele2Test):
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_porting_clickandcollect')
 
-class IBANnumberGenerator(Tele2Test):
-
-    def test_create_correct_IBANnumber(self, workflow='handset'):
-        pass
-
-    def test_create_incorrect_IBANnumber(self, workflow='handset'):
-        pass
-       
-    def test_create_incorrect_IBANnumber_backend(self, workflow='sim_only'):
-        pass 
-
-    def test_create_incorrect_IBANnumber_without_elevenproof(self, workflow='sim_only'):
-        pass
-
 class PrepaidWorkflows(Tele2Test):
 
     def test_simonly_prepaid(self, workflow='simonly_prepaid', profile='simonly_prepaid'):
@@ -221,6 +207,14 @@ class SimOnlyFieldValidation(Tele2Test):
         self.go_to_step2(workflow)
         self.field_validation('step_2', 'input_IBANnumber', 'select_services', settings.IBAN, 'incorrect', 'IBANnumber')
 
+    def test_IBANgenerator_correct(self, workflow='sim_only', profile="default"):
+        self.go_to_step2(workflow, profile)
+        self.IBAN_generator(profile, 'generator_input_correct', False)
+        
+    def test_IBANgenerator_incorrect(self, workflow='sim_only', profile='default'):
+        self.go_to_step2(workflow, profile)
+        self.IBAN_generator(profile, 'generator_input_incorrect', True)
+
     def test_document_number_incorrect(self, workflow='sim_only', profile='default'):
         self.go_to_step2(workflow)
         self.dropdownselector(profile, 'step_2', 'select_document_type', 'document_type', 'document_type')              
@@ -255,13 +249,12 @@ class SimOnlyWorkflows(Tele2Test):
 
 class Testing(Tele2Test):
 
-    def test_handset_postpaid_noporting_delivery(self, workflow='handset', profile='handset_postpaid_noporting_delivery'):
-        self.go_to_step4(workflow, profile)
-        self.elementcheck('step_4', 'lastpage')
-        self.get_screenshot('succesfull', 'test_handset_postpaid_noporting_delivery')
+    def function(self):
+        pass
 
 class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation, SimOnlyWorkflows, HandsetWorkflows, PrepaidWorkflows):
-    def function():
+    
+    def function(self):
         pass
 
 '''
@@ -269,7 +262,9 @@ class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation,
                 TEST GATHERER AND RUNNER - REPORT CREATING
 --------------------------------------------------------------------------------------------------------------------------------
 '''
-
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
+'''
 #   create general folder
 now = datetime.now()
 date = '%s-%s-%s' % (now.month, now.day, now.year)
@@ -292,4 +287,4 @@ HTMLTestRunner.HTMLTestRunner(
                 title='Test Report',
                 description='Here is the overview of the testrun.',
                 verbosity = 2
-                ).run(suite)
+                ).run(suite)'''

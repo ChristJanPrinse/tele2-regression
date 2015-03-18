@@ -171,6 +171,8 @@ class Tele2Test(Extensions, unittest.TestCase):
             self.driver.find_element_by_css_selector(settings.UI[part][selector]).clear()
 
     def get_screenshot(self, part, selector):
+        pass
+        '''
         global test
         testcase = unittest.TestCase.id(self)
         testcase = testcase.split('.')[2]
@@ -183,7 +185,7 @@ class Tele2Test(Extensions, unittest.TestCase):
         newpath = 'H:\output\%s\%s\%s' % (test[0], test[1], testcase)
         if not os.path.exists(newpath):
             os.mkdir('H:\output\%s\%s\%s' % (test[0], test[1], testcase))
-        self.driver.get_screenshot_as_file('H:\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))
+        self.driver.get_screenshot_as_file('H:\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))'''
 
     def go_to_configpage(self, workflow, profile='default'):
         self.cookiebar_accept()
@@ -331,6 +333,24 @@ class Tele2Test(Extensions, unittest.TestCase):
         add = self.driver.find_element_by_css_selector(locator)
         Hover = ActionChains(self.driver).move_to_element(add)
         Hover.perform()
+
+    def IBAN_generator(self, profile, entry_type, error_message):
+        for keys in settings.IBAN[entry_type].split(','):
+            length = 18 - len(keys)
+            self.elementcheck('step_2', 'link_ibanlink', click=True)
+            self.dropdownselector(profile, 'step_2', 'select_bank', 'bank','bank')
+            self.elementcheck('step_2', 'input_bankaccount', keys=keys)
+            IBANfield_entry = self.driver.find_element_by_css_selector('#ibannummer').get_attribute('value')[length:]
+            if entry_type == 'backend_validation_incorrect':
+                length = 19 - len(keys)
+                IBANfield_entry = self.driver.find_element_by_css_selector('#ibannummer').get_attribute('value')[length:]
+                self.assertEqual(IBANfield_entry, keys)
+                self.elementcheck('step_2', 'button_choose_IBAN', click=True)
+            elif error_message == False:
+                self.assertEqual(IBANfield_entry, keys)
+            elif error_message == True:
+                self.assertEqual(IBANfield_entry, '')
+            self.driver.find_element_by_css_selector('#bban').clear()
 
     def setUp(self):
         fp = webdriver.FirefoxProfile()
