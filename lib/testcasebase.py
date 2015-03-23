@@ -195,7 +195,7 @@ class Tele2Test(Extensions, unittest.TestCase):
                     # if no selector is found, spit out an error
                     self.fail('er gaat iets mis met de workflow selectie op UAT')
         else:
-            self.hover('menu', 'link_mobiel')
+            self.hover('menu', 'link_mobiel1')
             if workflow == 'sim_only':
                 self.elementcheck('menu', 'link_sim_only',click=True)
             elif workflow == 'handset':
@@ -349,10 +349,7 @@ class Tele2Test(Extensions, unittest.TestCase):
         fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\mobile\\addons\\Firebug.xpi')
         fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\mobile\\addons\\Firefinder.xpi')
         #   load up the remote driver and tell it to use Firefox
-        self.driver = webdriver.Remote(
-            command_executor="http://127.0.0.1:4444/wd/hub",
-            desired_capabilities=DesiredCapabilities.FIREFOX,
-            browser_profile=fp)
+        self.driver = webdriver.Firefox(firefox_profile=fp)
         self.driver.implicitly_wait(10)
         self.driver.set_window_size(1250,1000)
         self.driver.start_client()

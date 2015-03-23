@@ -1,12 +1,12 @@
 import lib.testcasebase
 import settings
 
+
 '''
 ------------------------------------------------------------------------------------------------------------------------
                 TEST SUMMARY
 ------------------------------------------------------------------------------------------------------------------------
 '''
-
 
 class HandsetWorkflows(lib.testcasebase.Tele2Test):
     def test_handset_postpaid_noporting_delivery(self, workflow='handset',
@@ -275,7 +275,7 @@ class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation,
                 TEST GATHERER AND RUNNER - REPORT CREATING
 ------------------------------------------------------------------------------------------------------------------------
 '''
-
+'''
 if __name__ == "__main__":
     lib.testcasebase.unittest.main(verbosity=2)
 
@@ -302,4 +302,4 @@ HTMLTestRunner.HTMLTestRunner(
                 title='Test Report',
                 description='Here is the overview of the testrun.',
                 verbosity = 2
-                ).run(suite)'''
+                ).run(suite)
