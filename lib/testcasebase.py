@@ -4,20 +4,17 @@ import email.header
 import imaplib
 import unittest
 import time
-import settings
-import os
 import sys
-
-from datetime import datetime
 from random import randint
+
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import Select
+
+import settings
+
 test = []
 
 class Extensions(object):
@@ -44,11 +41,10 @@ class Extensions(object):
             eleven_modulo_outcome = multiplied_number % 11
             return eleven_modulo_outcome
         def eleven_check(amount_digits, indicator= False):
-            while indicator == False:
+            while not indicator:
                 eleven_modulo_outcome = sum_eleven(amount_digits)
                 if eleven_modulo_outcome == 0:
                     return account_number
-                    break
         if ID == "rijbewijs":
             amount_digits = 9
             eleven_check(amount_digits)
@@ -76,7 +72,11 @@ class Extensions(object):
         M.close()
         M.logout()
 
+
+# noinspection PyDeprecation
 class Tele2Test(Extensions, unittest.TestCase):
+
+    _multiprocess_can_split_ = True
 
     def cookiebar_accept(self):
         self.driver.switch_to_frame(self.driver.find_element_by_css_selector("#qb_cookie_consent_main"))       
@@ -155,6 +155,7 @@ class Tele2Test(Extensions, unittest.TestCase):
                 pass
 
     def field_validation(self, part, selector, next_selector, entry, entry_type, error):
+
         for key in entry[entry_type].split(','):
             self.elementcheck(part, selector, keys=key)
             self.elementcheck(part, next_selector, click=True)
@@ -162,7 +163,8 @@ class Tele2Test(Extensions, unittest.TestCase):
             self.driver.find_element_by_css_selector(settings.UI[part][selector]).clear()
 
     def get_screenshot(self, part, selector):
-        global test
+        pass
+        '''global test
         testcase = unittest.TestCase.id(self)
         testcase = testcase.split('.')[2]
         newpath = 'H:\output\%s' % test[0]
@@ -174,8 +176,8 @@ class Tele2Test(Extensions, unittest.TestCase):
         newpath = 'H:\output\%s\%s\%s' % (test[0], test[1], testcase)
         if not os.path.exists(newpath):
             os.mkdir('H:\output\%s\%s\%s' % (test[0], test[1], testcase))
-        self.driver.get_screenshot_as_file('H:\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))
-        
+        self.driver.get_screenshot_as_file('H:\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))'''
+
     def go_to_configpage(self, workflow, profile='default'):
         self.cookiebar_accept()
         if len(sys.argv) > 2:
@@ -336,9 +338,9 @@ class Tele2Test(Extensions, unittest.TestCase):
                 IBANfield_entry = self.driver.find_element_by_css_selector('#ibannummer').get_attribute('value')[length:]
                 self.assertEqual(IBANfield_entry, keys)
                 self.elementcheck('step_2', 'button_choose_IBAN', click=True)
-            elif error_message == False:
+            elif not error_message:
                 self.assertEqual(IBANfield_entry, keys)
-            elif error_message == True:
+            elif error_message:
                 self.assertEqual(IBANfield_entry, '')
             self.driver.find_element_by_css_selector('#bban').clear()
 
@@ -353,10 +355,11 @@ class Tele2Test(Extensions, unittest.TestCase):
             browser_profile=fp)
         self.driver.implicitly_wait(10)
         self.driver.set_window_size(1250,1000)
- 
+        self.driver.start_client()
+
         #   navigate to URL and log in as developer (since the script creates a new instance with clean cache)
         self.driver.get('https://www.tele2.nl/')
 
     def tearDown(self):
         #   close the browser
-        self.driver.close()
+        self.driver.quit()

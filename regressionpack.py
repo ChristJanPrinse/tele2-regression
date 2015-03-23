@@ -1,20 +1,16 @@
-import HTMLTestRunner
-import os
-import time
-import sys
-
-from datetime import datetime
-from lib.testcasebase import Tele2Test, unittest, settings, test
-from selenium.common.exceptions import NoSuchElementException
+import lib.testcasebase
+import settings
 
 '''
---------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
                 TEST SUMMARY
---------------------------------------------------------------------------------------------------------------------------------
-'''    
-class HandsetWorkflows(Tele2Test):
+------------------------------------------------------------------------------------------------------------------------
+'''
 
-    def test_handset_postpaid_noporting_delivery(self, workflow='handset', profile='handset_postpaid_noporting_delivery'):
+
+class HandsetWorkflows(lib.testcasebase.Tele2Test):
+    def test_handset_postpaid_noporting_delivery(self, workflow='handset',
+                                                 profile='handset_postpaid_noporting_delivery'):
         self.go_to_step4(workflow, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_noporting_delivery')
@@ -24,18 +20,19 @@ class HandsetWorkflows(Tele2Test):
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_porting_delivery')
 
-    def test_handset_postpaid_noporting_clickandcollect(self, workflow='handset', profile='handset_postpaid_noporting_clickandcollect'):
+    def test_handset_postpaid_noporting_clickandcollect(self, workflow='handset',
+                                                        profile='handset_postpaid_noporting_clickandcollect'):
         self.go_to_step4(workflow, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_noporting_clickandcollect')
 
-    def test_handset_postpaid_porting_clickandcollect(self, workflow='handset', profile='handset_postpaid_porting_clickandcollect'):
+    def test_handset_postpaid_porting_clickandcollect(self, workflow='handset',
+                                                      profile='handset_postpaid_porting_clickandcollect'):
         self.go_to_step4(workflow, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_porting_clickandcollect')
 
-class PrepaidWorkflows(Tele2Test):
-
+class PrepaidWorkflows(lib.testcasebase.Tele2Test):
     def test_simonly_prepaid(self, workflow='simonly_prepaid', profile='simonly_prepaid'):
         self.go_to_step3_prepaid(workflow, profile)
         self.elementcheck('step_4', 'lastpage')
@@ -46,22 +43,25 @@ class PrepaidWorkflows(Tele2Test):
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_simonly_prepaid')
 
-class SimOnlyFieldCorrection(Tele2Test):
 
+class SimOnlyFieldCorrection(lib.testcasebase.Tele2Test):
     def test_firstletter_field_correction(self, workflow='sim_only'):
         self.go_to_step1(workflow)
-        self.field_validation('step_1', 'input_initials', 'input_firstname', settings.INITIALS, 'corrected', 'check_initials')
+        self.field_validation('step_1', 'input_initials', 'input_firstname', settings.INITIALS, 'corrected',
+                              'check_initials')
 
     def test_phonenumber_field_correction(self, workflow='sim_only'):
         self.go_to_step1(workflow)
-        self.field_validation('step_1', 'input_phonenumber', 'input_firstname', settings.PHONENUMBER, 'corrected', 'check_phonenumber')
+        self.field_validation('step_1', 'input_phonenumber', 'input_firstname', settings.PHONENUMBER, 'corrected',
+                              'check_phonenumber')
 
     def test_housenumber_field_correction(self, workflow='sim_only'):
         self.go_to_step1(workflow)
-        self.field_validation('step_1', 'input_housenumber', 'input_firstname', settings.HOUSENUMBER, 'corrected', 'check_housenumber')
+        self.field_validation('step_1', 'input_housenumber', 'input_firstname', settings.HOUSENUMBER, 'corrected',
+                              'check_housenumber')
 
-class SimOnlyFieldMandatory(Tele2Test):
 
+class SimOnlyFieldMandatory(lib.testcasebase.Tele2Test):
     def test_gender_mandatory(self, workflow='sim_only'):
         self.go_to_step1(workflow)
         self.elementcheck('step_1', 'button_next_step', click=True)
@@ -134,7 +134,7 @@ class SimOnlyFieldMandatory(Tele2Test):
 
     def test_documentnumber_mandatory(self, workflow='sim_only', profile='default'):
         self.go_to_step2(workflow)
-        self.dropdownselector(profile, 'step_2', 'select_document_type', 'document_type', 'document_type')              
+        self.dropdownselector(profile, 'step_2', 'select_document_type', 'document_type', 'document_type')
         self.elementcheck('step_2', 'button_next_step', click=True)
         self.errorcheck('step_2', 'documentnumber')
 
@@ -168,11 +168,12 @@ class SimOnlyFieldMandatory(Tele2Test):
         self.elementcheck('step_2', 'button_next_step', click=True)
         self.errorcheck('step_2', 'porting_date')
 
-class SimOnlyFieldValidation(Tele2Test):
 
+class SimOnlyFieldValidation(lib.testcasebase.Tele2Test):
     def test_firstname_field_validation(self, workflow='sim_only'):
         self.go_to_step1(workflow)
-        self.field_validation('step_1', 'input_firstname', 'input_lastname', settings.FIRSTNAME, 'incorrect', 'firstname')
+        self.field_validation('step_1', 'input_firstname', 'input_lastname', settings.FIRSTNAME, 'incorrect',
+                              'firstname')
 
     def test_lastname_field_validation(self, workflow='sim_only'):
         self.go_to_step1(workflow)
@@ -188,11 +189,13 @@ class SimOnlyFieldValidation(Tele2Test):
 
     def test_housenumber_field_incorrect(self, workflow='sim_only'):
         self.go_to_step1(workflow)
-        self.field_validation('step_1', 'input_housenumber', 'input_firstname', settings.HOUSENUMBER, 'incorrect', 'housenumber')
+        self.field_validation('step_1', 'input_housenumber', 'input_firstname', settings.HOUSENUMBER, 'incorrect',
+                              'housenumber')
 
     def test_phonenumber_field_incorrect(self, workflow='sim_only'):
         self.go_to_step1(workflow)
-        self.field_validation('step_1', 'input_phonenumber', 'input_firstname', settings.PHONENUMBER, 'incorrect', 'phonenumber')
+        self.field_validation('step_1', 'input_phonenumber', 'input_firstname', settings.PHONENUMBER, 'incorrect',
+                              'phonenumber')
 
     def test_email_field_incorrect(self, workflow='sim_only'):
         self.go_to_step1(workflow)
@@ -200,7 +203,8 @@ class SimOnlyFieldValidation(Tele2Test):
 
     def test_repeat_email_field_incorrect(self, workflow='sim_only'):
         self.go_to_step1(workflow)
-        self.field_validation('step_1', 'input_repeat_email', 'input_firstname', settings.EMAIL, 'incorrect', 'repeat_email')
+        self.field_validation('step_1', 'input_repeat_email', 'input_firstname', settings.EMAIL, 'incorrect',
+                              'repeat_email')
 
     def test_IBANgenerator_correct(self, workflow='sim_only', profile="default"):
         self.go_to_step2(workflow, profile)
@@ -216,17 +220,20 @@ class SimOnlyFieldValidation(Tele2Test):
 
     def test_document_number_incorrect(self, workflow='sim_only', profile='default'):
         self.go_to_step2(workflow)
-        self.dropdownselector(profile, 'step_2', 'select_document_type', 'document_type', 'document_type')              
-        self.field_validation('step_2', 'input_documentnumber', 'select_document_type', settings.DRIVERSLICENCE, 'incorrect', 'documentnumber')
+        self.dropdownselector(profile, 'step_2', 'select_document_type', 'document_type', 'document_type')
+        self.field_validation('step_2', 'input_documentnumber', 'select_document_type', settings.DRIVERSLICENCE,
+                              'incorrect', 'documentnumber')
 
     def test_porting_phonenumber_field_incorrect(self, workflow='sim_only', profile='porting_mandatory'):
         self.go_to_step2(workflow)
         self.dropdownselector(profile, 'step_2', 'select_porting', 'porting', 'porting')
-        self.field_validation('step_2', 'input_phonenumber', 'input_IBANnumber', settings.PHONENUMBER, 'incorrect', 'phonenumber')
+        self.field_validation('step_2', 'input_phonenumber', 'input_IBANnumber', settings.PHONENUMBER, 'incorrect',
+                              'phonenumber')
 
-class SimOnlyWorkflows(Tele2Test):
 
-    def test_simonly_postpaid_noporting_delivery(self, workflow='sim_only', profile='simonly_postpaid_noporting_delivery'):
+class SimOnlyWorkflows(lib.testcasebase.Tele2Test):
+    def test_simonly_postpaid_noporting_delivery(self, workflow='sim_only',
+                                                 profile='simonly_postpaid_noporting_delivery'):
         self.go_to_step4(workflow, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_simonly_postpaid_noporting_delivery')
@@ -236,31 +243,43 @@ class SimOnlyWorkflows(Tele2Test):
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_simonly_postpaid_porting_delivery')
 
-    def test_simonly_postpaid_noporting_clickandcollect(self, workflow='sim_only', profile='simonly_postpaid_noporting_clickandcollect'):
+    def test_simonly_postpaid_noporting_clickandcollect(self, workflow='sim_only',
+                                                        profile='simonly_postpaid_noporting_clickandcollect'):
         self.go_to_step4(workflow, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_simonly_postpaid_noporting_clickandcollect')
 
-    def test_simonly_postpaid_porting_clickandcollect(self, workflow='sim_only', profile='simonly_postpaid_porting_clickandcollect'):
+    def test_simonly_postpaid_porting_clickandcollect(self, workflow='sim_only',
+                                                      profile='simonly_postpaid_porting_clickandcollect'):
         self.go_to_step4(workflow, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_simonly_postpaid_porting_clickandcollect')
 
-class Testing(Tele2Test):
 
+class Testing(lib.testcasebase.Tele2Test):
+    def test_simonly_postpaid_porting_clickandcollect(self, workflow='sim_only',
+                                                      profile='simonly_postpaid_porting_clickandcollect'):
+        self.go_to_step4(workflow, profile)
+        self.elementcheck('step_4', 'lastpage')
+        self.get_screenshot('succesfull', 'test_simonly_postpaid_porting_clickandcollect')
+
+
+class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation, SimOnlyWorkflows, HandsetWorkflows,
+          PrepaidWorkflows):
     def function(self):
         pass
 
-class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation, SimOnlyWorkflows, HandsetWorkflows, PrepaidWorkflows):
-    def function():
-        pass
 
 '''
---------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
                 TEST GATHERER AND RUNNER - REPORT CREATING
---------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 '''
 
+if __name__ == "__main__":
+    lib.testcasebase.unittest.main(verbosity=2)
+
+'''
 #   create general folder
 now = datetime.now()
 date = '%s-%s-%s' % (now.month, now.day, now.year)
@@ -283,4 +302,4 @@ HTMLTestRunner.HTMLTestRunner(
                 title='Test Report',
                 description='Here is the overview of the testrun.',
                 verbosity = 2
-                ).run(suite)
+                ).run(suite)'''
