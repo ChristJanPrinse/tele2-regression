@@ -275,27 +275,3 @@ class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation,
 
 if __name__ == "__main__":
     lib.testcasebase.unittest.main(verbosity=2)
-
-'''#   create general folder
-now = datetime.now()
-date = '%s-%s-%s' % (now.month, now.day, now.year)
-time = '%s;%s' % (now.hour, now.minute)
-test.append(date)
-test.append(time)
-newpath = 'H:\output\%s\%s' % (test[0], test[1])
-if not os.path.exists(newpath):
-   os.makedirs('H:\output\%s\%s' % (test[0], test[1]))
-
-#   create report in testmap and run scripts
-path = 'H:\output\%s\%s\Report.html' % (test[0], test[1])
-
-outfile = open(path, 'w')
-
- #  run testcases
-suite = unittest.TestLoader().loadTestsFromTestCase(globals()[sys.argv[1]])
-HTMLTestRunner.HTMLTestRunner(
-                stream= outfile,
-                title='Test Report',
-                description='Here is the overview of the testrun.',
-                verbosity = 2
-                ).run(suite)'''

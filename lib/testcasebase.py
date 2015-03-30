@@ -1,7 +1,8 @@
 import unittest
 import os
-
+import time
 import datetime
+import settings
 from random import randint
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
@@ -9,15 +10,12 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import Select
 
-import settings
 
 test = []
 
 
 # noinspection PyDeprecation
 class Tele2Test(unittest.TestCase):
-    _multiprocess_can_split_ = True
-
     def cookiebar_accept(self):
         self.driver.switch_to_frame(self.driver.find_element_by_css_selector("#qb_cookie_consent_main"))
         self.driver.find_element_by_css_selector('#buttonAccept').click()
@@ -108,15 +106,12 @@ class Tele2Test(unittest.TestCase):
         testcase = testcase.split('.')[2]
         current = datetime.datetime.now()
         date = '%s-%s-%s' % (current.month, current.day, current.year)
-        time = '%s;%s;%s' % (current.hour, current.minute, current.second)
-        newpath = 'C:\Users\j-rijnaars\Documents\screenshots\%s' % date
+        tijd = '%s;%s' % (current.hour, current.minute)
+        newpath = 'H:\\output\\%s\\%s' % (date, tijd)
         if not os.path.exists(newpath):
-            os.mkdir('C:\Users\j-rijnaars\Documents\screenshots\%s' % date)
-        newpath = 'C:\Users\j-rijnaars\Documents\screenshots\%s\%s' % (date, testcase)
-        if not os.path.exists(newpath):
-            os.mkdir('C:\Users\j-rijnaars\Documents\screenshots\%s\%s' % (date, testcase))
-        self.driver.get_screenshot_as_file('C:\Users\j-rijnaars\Documents\screenshots\%s\%s\%s %s time=%s.png' % (
-            date, testcase, part, selector, time))
+            os.makedirs('H:\\output\\%s\\%s' % (date, tijd))
+        self.driver.get_screenshot_as_file(
+            'H:\\output\\%s\\%s\\%s\\%s %s time=%s.png' % (date, tijd, testcase, part, selector, tijd))
 
     def go_to_configpage(self, workflow):
         self.cookiebar_accept()
@@ -177,14 +172,14 @@ class Tele2Test(unittest.TestCase):
         self.elementcheck('step_1', 'input_e-mail', keys=settings.PROFILES[profile]['email'])
         self.elementcheck('step_1', 'input_repeat_email', keys=settings.PROFILES[profile]['repeat_email'])
         count = 0
-        while not (self.driver.find_element_by_css_selector('#street').get_attribute("value") ==
-                   settings.PROFILES[profile]['streetname']):
+        while not self.driver.find_element_by_css_selector('#street').get_attribute("value") == \
+                settings.PROFILES[profile]['streetname']:
             if count >= 50:
                 self.get_screenshot('step_1', 'input_street')
                 # if no selector is found, spit out an error
                 self.fail('finding the adress took longer then 5 seconds')
             else:
-                datetime.time.sleep(0.1)
+                time.sleep(0.1)
                 count += 1
         self.get_screenshot('step_1', 'succes')
         self.elementcheck('step_1', 'button_next_step', click=True)
@@ -275,14 +270,15 @@ class Tele2Test(unittest.TestCase):
             self.driver.find_element_by_css_selector('#bban').clear()
 
     def setUp(self):
-        fp = webdriver.FirefoxProfile()
-        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\mobile\\addons\\Firebug.xpi')
-        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\mobile\\addons\\Firefinder.xpi')
+        profile = webdriver.FirefoxProfile()
+        profile.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\mobile\\addons\\Firebug.xpi')
+        profile.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\mobile\\addons\\Firefinder.xpi')
         # load up the remote driver and tell it to use Firefox
-        self.driver = webdriver.Firefox(firefox_profile=fp)
-        self.driver.implicitly_wait(10)
-        self.driver.set_window_size(1250, 1000)
-        self.driver.start_client()
+        self.driver = webdriver.Remote(
+            command_executor='http://127.0.0.1:4444/wd/hub',
+            desired_capabilities=DesiredCapabilities.FIREFOX,
+            browser_profile=profile)
+        self.driver.implicitly_wait(3)
 
         # navigate to URL and log in as developer (since the script creates a new instance with clean cache)
         self.driver.get('https://www.tele2.nl/')
