@@ -258,11 +258,8 @@ class SimOnlyWorkflows(lib.testcasebase.Tele2Test):
 
 class Testing(lib.testcasebase.Tele2Test):
     def test_simonly_postpaid_porting_clickandcollect(self, workflow='sim_only',
-                                                      profile='simonly_postpaid_porting_clickandcollect'):
-        self.go_to_step4(workflow, profile)
-        self.elementcheck('step_4', 'lastpage')
-        self.get_screenshot('succesfull', 'test_simonly_postpaid_porting_clickandcollect')
-
+                                                      profile='simonly_postpaid_noporting_delivery'):
+        self.go_to_step1(workflow, profile)
 
 class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation, SimOnlyWorkflows, HandsetWorkflows,
           PrepaidWorkflows):
@@ -275,12 +272,11 @@ class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation,
                 TEST GATHERER AND RUNNER - REPORT CREATING
 ------------------------------------------------------------------------------------------------------------------------
 '''
-'''
+
 if __name__ == "__main__":
     lib.testcasebase.unittest.main(verbosity=2)
 
-'''
-#   create general folder
+'''#   create general folder
 now = datetime.now()
 date = '%s-%s-%s' % (now.month, now.day, now.year)
 time = '%s;%s' % (now.hour, now.minute)
@@ -302,4 +298,4 @@ HTMLTestRunner.HTMLTestRunner(
                 title='Test Report',
                 description='Here is the overview of the testrun.',
                 verbosity = 2
-                ).run(suite)
+                ).run(suite)'''
