@@ -8,6 +8,7 @@ import settings
 ------------------------------------------------------------------------------------------------------------------------
 '''
 
+
 class HandsetWorkflows(lib.testcasebase.Tele2Test):
     def test_handset_postpaid_noporting_delivery(self, workflow='handset',
                                                  profile='handset_postpaid_noporting_delivery'):
@@ -31,6 +32,7 @@ class HandsetWorkflows(lib.testcasebase.Tele2Test):
         self.go_to_step4(workflow, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_porting_clickandcollect')
+
 
 class PrepaidWorkflows(lib.testcasebase.Tele2Test):
     def test_simonly_prepaid(self, workflow='simonly_prepaid', profile='simonly_prepaid'):
@@ -260,11 +262,6 @@ class Testing(lib.testcasebase.Tele2Test):
     def test_simonly_postpaid_porting_clickandcollect(self, workflow='sim_only',
                                                       profile='simonly_postpaid_noporting_delivery'):
         self.go_to_step1(workflow, profile)
-
-class ALL(SimOnlyFieldCorrection, SimOnlyFieldMandatory, SimOnlyFieldValidation, SimOnlyWorkflows, HandsetWorkflows,
-          PrepaidWorkflows):
-    def function(self):
-        pass
 
 
 '''

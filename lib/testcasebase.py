@@ -226,7 +226,7 @@ class Tele2Test(unittest.TestCase):
                         # if no selector is found, spit out an error
                         self.fail('dixons gives timeout')
                 else:
-                    datetime.time.sleep(0.1)
+                    time.sleep(0.1)
                     clickandcollect = self.driver.find_element_by_css_selector('.shop-name')
                     count += 1
         self.elementcheck('step_3', 'terms', click=True)
@@ -278,7 +278,7 @@ class Tele2Test(unittest.TestCase):
             command_executor='http://127.0.0.1:4444/wd/hub',
             desired_capabilities=DesiredCapabilities.FIREFOX,
             browser_profile=profile)
-        self.driver.implicitly_wait(3)
+        self.driver.implicitly_wait(5)
 
         # navigate to URL and log in as developer (since the script creates a new instance with clean cache)
         self.driver.get('https://www.tele2.nl/')
