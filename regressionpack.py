@@ -210,11 +210,11 @@ class SimOnlyFieldValidation(lib.testcasebase.Tele2Test):
 
     def test_IBANgenerator_correct(self, workflow='sim_only', profile="default"):
         self.go_to_step2(workflow, profile)
-        self.IBAN_generator(profile, 'generator_input_correct', False)
+        self.IBAN_generator(profile, status='incorrect')
 
     def test_IBANgenerator_incorrect(self, workflow='sim_only', profile='default'):
         self.go_to_step2(workflow, profile)
-        self.IBAN_generator(profile, 'generator_input_incorrect', True)
+        #   self.IBAN_generator(profile, 'generator_input_incorrect', True)
 
     def test_IBAN_field_incorrect(self, workflow='sim_only'):
         self.go_to_step2(workflow)
@@ -256,12 +256,6 @@ class SimOnlyWorkflows(lib.testcasebase.Tele2Test):
         self.go_to_step4(workflow, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_simonly_postpaid_porting_clickandcollect')
-
-
-class Testing(lib.testcasebase.Tele2Test):
-    def test_simonly_postpaid_porting_clickandcollect(self, workflow='sim_only',
-                                                      profile='simonly_postpaid_noporting_delivery'):
-        self.go_to_step1(workflow, profile)
 
 
 '''
