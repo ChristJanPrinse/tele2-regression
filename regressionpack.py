@@ -257,6 +257,14 @@ class SimOnlyWorkflows(lib.testcasebase.Tele2Test):
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_simonly_postpaid_porting_clickandcollect')
 
+class SimOnlyShoppingcart(lib.testcasebase.Tele2Test):
+    def test_configurepage_cart(self, workflow='sim_only', profile='default'):
+        self.go_to_configpage(workflow, profile)
+        self.shoppingcart_configpage()
+
+    def test_step1_cart(self, workflow='sim_only', profile='default'):
+        self.go_to_step1(workflow, profile)
+        self.shoppingcart_step1()
 
 '''
 ------------------------------------------------------------------------------------------------------------------------

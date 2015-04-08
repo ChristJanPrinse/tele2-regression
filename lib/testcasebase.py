@@ -20,63 +20,8 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import Select
 test = []
 
-class Extensions(object):
 
-    def create_account_number(self, ID):
-        def create_number(account):
-            account_number = []
-            count = 0
-            while count <= account:
-                account_number.append(randint(1, 9))
-                count += 1
-            return account_number
-        def multiply_by_eleven(amount_digits):
-            global account_number
-            account_number = create_number(amount_digits)
-            multiplied_number = 0
-            multiply = amount_digits + 1
-            for num in account_number:
-                multiplied_number += num * multiply
-                multiply -= 1
-            return multiplied_number
-        def sum_eleven(amount_digits):
-            multiplied_number = multiply_by_eleven(amount_digits)
-            eleven_modulo_outcome = multiplied_number % 11
-            return eleven_modulo_outcome
-        def eleven_check(amount_digits, indicator= False):
-            while indicator == False:
-                eleven_modulo_outcome = sum_eleven(amount_digits)
-                if eleven_modulo_outcome == 0:
-                    return account_number
-                    break
-        if ID == "rijbewijs":
-            amount_digits = 9
-            eleven_check(amount_digits)
-            return ''.join(str(x) for x in account_number)
-        elif ID == 'bankaccount':
-            amount_digits = 8
-            eleven_check(amount_digits)
-            return ''.join(str(x) for x in account_number)
-
-    def getactivationcode(email_account="automatedmailbox@gmail.com", email_password="Selenium123", email_folder="inbox"):
-        def skipline(base, i=1):
-            return '\n'.join(base.split('\n')[i:])
-        M = imaplib.IMAP4_SSL('imap.gmail.com')
-        rv, data = M.login(email_account, email_password)
-        rv, mailboxes = M.list()
-        rv, data = M.select(email_folder) 
-        rv, data = M.search(None, "ALL")
-        for num in data[0].split():
-            rv, data = M.fetch(num, '(RFC822)')
-            msg = email.message_from_string(data[0][1])
-            for part in email.iterators.typed_subpart_iterator(msg, 'text', 'html'): 
-                html = base64.b64decode(skipline(str(part), 4))
-                html = html[html.index("activate=")+9:]
-                return html[:html.index('\"')]
-        M.close()
-        M.logout()
-
-class Tele2Test(Extensions, unittest.TestCase):
+class Tele2Test(unittest.TestCase):
 
     def cookiebar_accept(self):
         self.driver.switch_to_frame(self.driver.find_element_by_css_selector("#qb_cookie_consent_main"))       
@@ -158,6 +103,8 @@ class Tele2Test(Extensions, unittest.TestCase):
             self.driver.find_element_by_css_selector(settings.UI[part][selector]).clear()
 
     def get_screenshot(self, part, selector):
+        pass
+        '''
         global test
         testcase = unittest.TestCase.id(self)
         testcase = testcase.split('.')[2]
@@ -170,7 +117,7 @@ class Tele2Test(Extensions, unittest.TestCase):
         newpath = 'H:\output\%s\%s\%s' % (test[0], test[1], testcase)
         if not os.path.exists(newpath):
             os.mkdir('H:\output\%s\%s\%s' % (test[0], test[1], testcase))
-        self.driver.get_screenshot_as_file('H:\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))
+        self.driver.get_screenshot_as_file('H:\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))'''
         
     def go_to_configpage(self, workflow, profile='default'):
         self.cookiebar_accept()
@@ -315,6 +262,25 @@ class Tele2Test(Extensions, unittest.TestCase):
             self.driver.find_element_by_css_selector('#btnChooseIban').click()
             self.assertEqual(key, actual)
 
+    def shoppingcart_configpage(self):
+        #   select price internet bundle
+        internet_bundle = self.driver.find_element_by_css_selector('#data-subscription-listSelectBoxItContainer .selectbox-subscription-value').text
+        internet_bundle = internet_bundle[:3][1:]
+        #   select bel/sms bundle
+        sms_bundle = self.driver.find_element_by_css_selector('#voice-subscription-listSelectBoxItContainer .selectbox-subscription-value').text
+        sms_bundle = sms_bundle[:3][1:]
+        #   select subtotal visible in page
+        subtotal = self.driver.find_element_by_css_selector('.subtotals-cost').text
+        subtotal = int(subtotal[:3][1:])
+        #   add up sms bundle and internet bundle
+        bundle_total = int(internet_bundle) + int(sms_bundle)
+        #   assert bundle total and subtotal
+        self.assertEqual(subtotal,bundle_total)
+
+    def shoppingcart_step1(self):
+        shopping_cart = self.driver.find_element_by_css_selector('.cart.block')
+        shopping_cart
+
     def setUp(self):
         if test == []:
             now = datetime.now()
@@ -323,8 +289,8 @@ class Tele2Test(Extensions, unittest.TestCase):
             test.append(date)
             test.append(time)
         fp = webdriver.FirefoxProfile()
-        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\mobile\\addons\\Firebug.xpi')
-        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\mobile\\addons\\Firefinder.xpi')
+        fp.add_extension('C:\\Users\\Juriaan\\Documents\\tele2-regression\\addons\\Firebug.xpi')
+        fp.add_extension('C:\\Users\\Juriaan\\Documents\\tele2-regression\\addons\\Firefinder.xpi')
         #   load up the remote driver and tell it to use Firefox
         self.driver = webdriver.Remote(
             command_executor="http://127.0.0.1:4444/wd/hub",
@@ -339,9 +305,3 @@ class Tele2Test(Extensions, unittest.TestCase):
     def tearDown(self):
         #   Quit the browser
         self.driver.quit()
-
-    def textcheck(self, workflow, profile='default'):
-        current_text_1 = self.driver.find_element_by_css_selector('li.odd:nth-child(1) > p:nth-child(2)')
-        text_1 = self.driver.find_element_by_css_selector(settings.TEXT[profile]['text_1'])
-        print str(current_text_1.text)
-        self.assertEqual(current_text_1.text, text_1)
