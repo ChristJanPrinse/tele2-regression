@@ -278,8 +278,12 @@ class Tele2Test(unittest.TestCase):
         self.assertEqual(subtotal,bundle_total)
 
     def shoppingcart_step1(self):
+        cart = []
         shopping_cart = self.driver.find_element_by_css_selector('.cart.block')
-        shopping_cart
+        shopping_cart = shopping_cart.text
+        for word in shopping_cart.split(" "):
+            cart.append(word)
+        print cart
 
     def setUp(self):
         if test == []:
