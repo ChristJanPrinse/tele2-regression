@@ -1,32 +1,27 @@
-import base64
-import email
-import email.header
-import imaplib
 import unittest
 import time
-import settings
 import os
-import sys
-
 from datetime import datetime
 from random import randint
+
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import Select
+
+import settings
+
+
 test = []
 
 
+# noinspection PyBroadException
 class Tele2Test(unittest.TestCase):
-
     def cookiebar_accept(self):
-        self.driver.switch_to_frame(self.driver.find_element_by_css_selector("#qb_cookie_consent_main"))       
+        self.driver.switch_to.frame(self.driver.find_element_by_css_selector("#qb_cookie_consent_main"))
         self.driver.find_element_by_css_selector('#buttonAccept').click()
-        self.driver.switch_to_default_content()
+        self.driver.switch_to.default_content()
 
     def dropdownselector(self, profile, part, selector, entry, entry_type):
         self.elementcheck(part, selector, click=True)
@@ -62,6 +57,7 @@ class Tele2Test(unittest.TestCase):
                 # if no selector is found, spit out an error
                 self.fail("Expected to find element %s but did not find it." % selector)
 
+    # noinspection PyRedundantParentheses
     def errorcheck(self, part, selector):
         if ('mandatory' in settings.ERROR[part][selector]):
             count = 1
@@ -103,38 +99,37 @@ class Tele2Test(unittest.TestCase):
             self.driver.find_element_by_css_selector(settings.UI[part][selector]).clear()
 
     def get_screenshot(self, part, selector):
-        pass
-        '''
         global test
         testcase = unittest.TestCase.id(self)
         testcase = testcase.split('.')[2]
         newpath = 'H:\output\%s' % test[0]
         if not os.path.exists(newpath):
-           os.mkdir('H:\output\%s' % test[0])
+            os.mkdir('H:\output\%s' % test[0])
         newpath = 'H:\output\%s\%s' % (test[0], test[1])
         if not os.path.exists(newpath):
-           os.mkdir('H:\output\%s\%s' % (test[0], test[1]))
+            os.mkdir('H:\output\%s\%s' % (test[0], test[1]))
         newpath = 'H:\output\%s\%s\%s' % (test[0], test[1], testcase)
         if not os.path.exists(newpath):
             os.mkdir('H:\output\%s\%s\%s' % (test[0], test[1], testcase))
-        self.driver.get_screenshot_as_file('H:\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))'''
-        
-    def go_to_configpage(self, workflow, profile='default'):
+        self.driver.get_screenshot_as_file(
+            'H:\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))
+
+    def go_to_configpage(self, workflow):
         self.cookiebar_accept()
         self.hover('menu', 'link_mobiel')
         if workflow == 'sim_only':
-            self.elementcheck('menu', 'link_sim_only',click=True)
+            self.elementcheck('menu', 'link_sim_only', click=True)
         elif workflow == 'handset':
-            self.elementcheck('menu', 'link_handset',click=True)
+            self.elementcheck('menu', 'link_handset', click=True)
             handset = '.phones_wrapper.abonnement > article:nth-child(%s)' % randint(1, 9)
             self.hover_article(handset)
             handset = '%s %s' % (handset, 'a.preview-img-link')
             self.driver.find_element_by_css_selector(handset).click()
         elif workflow == 'simonly_prepaid':
-            self.elementcheck('menu', 'link_prepaid',click=True)
+            self.elementcheck('menu', 'link_prepaid', click=True)
             self.elementcheck('overview_page', 'prepaid_simonly', click=True)
         elif workflow == 'handset_prepaid':
-            self.elementcheck('menu', 'link_prepaid',click=True)
+            self.elementcheck('menu', 'link_prepaid', click=True)
             self.elementcheck('overview_page', 'prepaid_handset', click=True)
             handset = '.phones_wrapper.prepaid > article:nth-child(%s)' % randint(1, 9)
             self.hover_article(handset)
@@ -145,40 +140,42 @@ class Tele2Test(unittest.TestCase):
             # if no selector is found, spit out an error
             self.fail('er gaat iets mis met de workflow selectie')
 
+    # noinspection PyArgumentList
     def go_to_step1(self, workflow, profile='default'):
         self.go_to_configpage(workflow, profile)
-        #   workaround a-b testing
+        # workaround a-b testing
+        try:
+            self.driver.find_element_by_css_selector('a.fld_button[title*="Sim Only abonnement"]').click()
+        except:
+            pass
         if workflow == 'sim_only' or workflow == 'handset':
-            try:
-                self.driver.find_element_by_css_selector(settings.UI['configure_page']['button_order'])
-            except NoSuchElementException:
-                self.elementcheck('homepage', 'button_banner', click=True)
-            #   select internet bundle
+            # select internet bundle
             self.dropdownselector(profile, 'configure_page', 'select_internetbundle', 'bundles', 'internetbundle')
             self.dropdownselector(profile, 'configure_page', 'select_belbundle', 'bundles', 'belbundle')
             self.get_screenshot('configure_page', 'succes')
-            self.elementcheck('configure_page', 'button_order',click=True)
+            self.elementcheck('configure_page', 'button_order', click=True)
         elif workflow == 'simonly_prepaid' or workflow == 'handset_prepaid':
             self.get_screenshot('configure_page', 'succes')
-            self.elementcheck('prepaid', 'button_order', click=True)            
+            self.elementcheck('prepaid', 'button_order', click=True)
 
     def go_to_step2(self, workflow, profile='default'):
         self.go_to_step1(workflow, profile)
         self.dropdownselector(profile, 'step_1', 'select_gender', 'gender', 'gender')
-        self.elementcheck('step_1', 'input_firstname',keys=settings.PROFILES[profile]['firstname'])
-        self.elementcheck('step_1', 'input_lastname',keys=settings.PROFILES[profile]['lastname'])
-        self.elementcheck('step_1', 'input_initials',keys=settings.PROFILES[profile]['initials'])
+        self.elementcheck('step_1', 'input_firstname', keys=settings.PROFILES[profile]['firstname'])
+        self.elementcheck('step_1', 'input_lastname', keys=settings.PROFILES[profile]['lastname'])
+        self.elementcheck('step_1', 'input_initials', keys=settings.PROFILES[profile]['initials'])
         if workflow == 'sim_only' or workflow == 'handset':
             self.dropdownselector(profile, 'step_1', 'select_day', 'day', 'day')
             self.dropdownselector(profile, 'step_1', 'select_month', 'month', 'month')
             self.dropdownselector(profile, 'step_1', 'select_year', 'year', 'year')
-        self.elementcheck('step_1', 'input_postcode',keys=settings.PROFILES[profile]['postcode'])
-        self.elementcheck('step_1', 'input_housenumber',keys=settings.PROFILES[profile]['housenumber'])
-        self.elementcheck('step_1', 'input_phonenumber',keys=settings.PROFILES[profile]['phonenumber'])
-        self.elementcheck('step_1', 'input_e-mail',keys=settings.PROFILES[profile]['email'])
-        self.elementcheck('step_1', 'input_repeat_email',keys=settings.PROFILES[profile]['repeat_email'])
+        self.elementcheck('step_1', 'input_postcode', keys=settings.PROFILES[profile]['postcode'])
+        self.elementcheck('step_1', 'input_housenumber', keys=settings.PROFILES[profile]['housenumber'])
+        self.elementcheck('step_1', 'input_phonenumber', keys=settings.PROFILES[profile]['phonenumber'])
+        self.elementcheck('step_1', 'input_e-mail', keys=settings.PROFILES[profile]['email'])
+        self.elementcheck('step_1', 'input_repeat_email', keys=settings.PROFILES[profile]['repeat_email'])
         count = 0
-        while not (self.driver.find_element_by_css_selector('#street').get_attribute("value") == settings.PROFILES[profile]['streetname']) :
+        while not (self.driver.find_element_by_css_selector('#street').get_attribute("value") ==
+                   settings.PROFILES[profile]['streetname']):
             if count >= 50:
                 self.get_screenshot('step_1', 'input_street')
                 # if no selector is found, spit out an error
@@ -191,21 +188,24 @@ class Tele2Test(unittest.TestCase):
 
     def go_to_step3(self, workflow, profile='default'):
         self.go_to_step2(workflow, profile)
-        self.elementcheck('step_2', 'input_IBANnumber',keys=settings.PROFILES[profile]['IBAN_number'])
-        self.dropdownselector(profile, 'step_2', 'select_document_type', 'document_type', 'document_type')              
-        self.elementcheck('step_2', 'input_documentnumber',keys=settings.PROFILES[profile]['document_number'])
+        self.elementcheck('step_2', 'input_IBANnumber', keys=settings.PROFILES[profile]['IBAN_number'])
+        self.dropdownselector(profile, 'step_2', 'select_document_type', 'document_type', 'document_type')
+        self.elementcheck('step_2', 'input_documentnumber', keys=settings.PROFILES[profile]['document_number'])
         self.dropdownselector(profile, 'step_2', 'select_porting', 'porting', 'porting')
         if settings.PROFILES[profile]['porting'] == 'ja':
-            self.elementcheck('step_2', 'input_phonenumber',keys=settings.PROFILES[profile]['current_phonenumber'])
-            self.dropdownselector(profile, 'step_2', 'select_current_subscription', 'current_subscription', 'current_subscriber')
+            self.elementcheck('step_2', 'input_phonenumber', keys=settings.PROFILES[profile]['current_phonenumber'])
+            self.dropdownselector(profile, 'step_2', 'select_current_subscription', 'current_subscription',
+                                  'current_subscriber')
             self.dropdownselector(profile, 'step_2', 'select_mobile_provider', 'mobile_provider', 'current_provider')
-            self.elementcheck('step_2', 'input_simcard_number',keys=settings.PROFILES[profile]['current_simcardnumber'])
+            self.elementcheck('step_2', 'input_simcard_number',
+                              keys=settings.PROFILES[profile]['current_simcardnumber'])
             self.elementcheck('step_2', 'select_date', click=True)
             self.elementcheck('step_2', 'select_day', click=True)
-        self.dropdownselector(profile, 'step_2', 'select_services', 'services', 'services')              
+        self.dropdownselector(profile, 'step_2', 'select_services', 'services', 'services')
         self.get_screenshot('step_2', 'succes')
         self.elementcheck('step_2', 'button_next_step', click=True)
 
+    # noinspection PyRedundantParentheses
     def go_to_step4(self, workflow, profile='default'):
         self.go_to_step3(workflow, profile)
         if (settings.PROFILES[profile]['delivery']):
@@ -217,7 +217,7 @@ class Tele2Test(unittest.TestCase):
             self.elementcheck('step_3', 'ratio_click_collect', click=settings.PROFILES[profile]['click_collect'])
             count = 0
             clickandcollect = self.driver.find_element_by_css_selector('.dixons-point-content')
-            while not (clickandcollect.text.split()[0] == 'dixons') :
+            while not (clickandcollect.text.split()[0] == 'dixons'):
                 if count >= 50:
                     if clickandcollect == 'Er':
                         self.get_screenshot('step_3', 'no dixons found')
@@ -243,14 +243,14 @@ class Tele2Test(unittest.TestCase):
 
     def hover_article(self, selector):
         add = self.driver.find_element_by_css_selector(selector)
-        Hover = ActionChains(self.driver).move_to_element(add)
-        Hover.perform()
+        hover = ActionChains(self.driver).move_to_element(add)
+        hover.perform()
 
-    def hover (self, part, selector):
+    def hover(self, part, selector):
         locator = settings.UI[part][selector]
         add = self.driver.find_element_by_css_selector(locator)
-        Hover = ActionChains(self.driver).move_to_element(add)
-        Hover.perform()
+        hover = ActionChains(self.driver).move_to_element(add)
+        hover.perform()
 
     def IBAN_generator(self, profile, status):
         self.driver.find_element_by_css_selector('a.label-help').click()
@@ -263,71 +263,55 @@ class Tele2Test(unittest.TestCase):
             self.assertEqual(key, actual)
 
     def shoppingcart_configpage(self):
-        #   select price internet bundle
-        internet_bundle = self.driver.find_element_by_css_selector('#data-subscription-listSelectBoxItContainer .selectbox-subscription-value').text
+        # select price internet bundle
+        internet_bundle = self.driver.find_element_by_css_selector(
+            '#data-subscription-listSelectBoxItContainer .selectbox-subscription-value').text
         internet_bundle = internet_bundle[:3][1:]
-        #   select bel/sms bundle
-        sms_bundle = self.driver.find_element_by_css_selector('#voice-subscription-listSelectBoxItContainer .selectbox-subscription-value').text
+        # select bel/sms bundle
+        sms_bundle = self.driver.find_element_by_css_selector(
+            '#voice-subscription-listSelectBoxItContainer .selectbox-subscription-value').text
         sms_bundle = sms_bundle[:3][1:]
-        #   select subtotal visible in page
+        # select subtotal visible in page
         subtotal = self.driver.find_element_by_css_selector('.subtotals-cost').text
         subtotal = int(subtotal[:3][1:])
-        #   add up sms bundle and internet bundle
+        # add up sms bundle and internet bundle
         bundle_total = int(internet_bundle) + int(sms_bundle)
         #   assert bundle total and subtotal
-        self.assertEqual(subtotal,bundle_total)
+        self.assertEqual(subtotal, bundle_total)
 
     def shoppingcart_step1(self):
         shopping_cart = self.driver.find_element_by_css_selector('.cart.block').text
-        #   get sms bundle from shopping cart
-        sms_bundle = int(shopping_cart[shopping_cart.index('Bel/Sms')+10:][:1])
-        #   get internet bundle from shopping cart
-        internet_bundle = int(shopping_cart[shopping_cart.index('Internet')+11:][:1])
-        #   get total cost a month
-        total_cost_monthly = int(shopping_cart[shopping_cart.index('Totaal per maand')+19:][:1])
+        # get sms bundle from shopping cart
+        sms_bundle = int(shopping_cart[shopping_cart.index('Bel/Sms') + 10:][:1])
+        # get internet bundle from shopping cart
+        internet_bundle = int(shopping_cart[shopping_cart.index('Internet') + 11:][:1])
+        # get total cost a month
+        total_cost_monthly = int(shopping_cart[shopping_cart.index('Totaal per maand') + 19:][:1])
         bundle_total = int(internet_bundle) + int(sms_bundle)
-        #   assert bundle total and subtotal
-        self.assertEqual(total_cost_monthly ,bundle_total)
+        # assert bundle total and subtotal
+        self.assertEqual(total_cost_monthly, bundle_total)
 
     def setUp(self):
-        if test == []:
+        if not test:
             now = datetime.now()
             date = '%s-%s-%s' % (now.month, now.day, now.year)
-            time = '%s;%s' % (now.hour, now.minute)
+            time_tag = '%s;%s' % (now.hour, now.minute)
             test.append(date)
-            test.append(time)
+            test.append(time_tag)
         fp = webdriver.FirefoxProfile()
-        fp.add_extension('C:\\Users\\Juriaan\\Documents\\tele2-regression\\addons\\Firebug.xpi')
-        fp.add_extension('C:\\Users\\Juriaan\\Documents\\tele2-regression\\addons\\Firefinder.xpi')
-        #   load up the remote driver and tell it to use Firefox
+        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\mobile\\addons\\Firebug.xpi')
+        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\mobile\\addons\\Firefinder.xpi')
+        # load up the remote driver and tell it to use Firefox
         self.driver = webdriver.Remote(
             command_executor="http://127.0.0.1:4444/wd/hub",
             desired_capabilities=DesiredCapabilities.FIREFOX,
             browser_profile=fp)
         self.driver.implicitly_wait(10)
         self.driver.set_window_size(1280, 1024)
- 
-        #   navigate to URL and log in as developer (since the script creates a new instance with clean cache)
+
+        # navigate to URL and log in as developer (since the script creates a new instance with clean cache)
         self.driver.get('https://www.tele2.nl/')
 
     def tearDown(self):
-        #   Quit the browser
+        # Quit the browser
         self.driver.quit()
-
-    def getactivationcode(email_account="automatedmailbox@gmail.com", email_password="Selenium123", email_folder="inbox"):
-        def skipline(base, i=1):
-            return '\n'.join(base.split('\n')[i:])
-        M = imaplib.IMAP4_SSL('imap.gmail.com')
-        rv, data = M.login(email_account, email_password)
-        rv, mailboxes = M.list()
-        rv, data = M.select(email_folder)
-        rv, data = M.search(None, "ALL")
-        for num in data[0].split():
-            rv, data = M.fetch(num, '(RFC822)')
-            msg = email.message_from_string(data[0][1])
-            for part in email.iterators.typed_subpart_iterator(msg, 'text', 'html'):
-                html = base64.b64decode(skipline(str(part), 4))
-                html = html[html.index("activate=")+9:]
-                return html[:html.index('\"')]
-        M.close()
-        M.logout()
