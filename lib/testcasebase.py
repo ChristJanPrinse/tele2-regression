@@ -278,12 +278,16 @@ class Tele2Test(unittest.TestCase):
         self.assertEqual(subtotal,bundle_total)
 
     def shoppingcart_step1(self):
-        cart = []
-        shopping_cart = self.driver.find_element_by_css_selector('.cart.block')
-        shopping_cart = shopping_cart.text
-        for word in shopping_cart.split(" "):
-            cart.append(word)
-        print cart
+        shopping_cart = self.driver.find_element_by_css_selector('.cart.block').text
+        #   get sms bundle from shopping cart
+        sms_bundle = int(shopping_cart[shopping_cart.index('Bel/Sms')+10:][:1])
+        #   get internet bundle from shopping cart
+        internet_bundle = int(shopping_cart[shopping_cart.index('Internet')+11:][:1])
+        #   get total cost a month
+        total_cost_monthly = int(shopping_cart[shopping_cart.index('Totaal per maand')+19:][:1])
+        bundle_total = int(internet_bundle) + int(sms_bundle)
+        #   assert bundle total and subtotal
+        self.assertEqual(total_cost_monthly ,bundle_total)
 
     def setUp(self):
         if test == []:
@@ -309,3 +313,21 @@ class Tele2Test(unittest.TestCase):
     def tearDown(self):
         #   Quit the browser
         self.driver.quit()
+
+    def getactivationcode(email_account="automatedmailbox@gmail.com", email_password="Selenium123", email_folder="inbox"):
+        def skipline(base, i=1):
+            return '\n'.join(base.split('\n')[i:])
+        M = imaplib.IMAP4_SSL('imap.gmail.com')
+        rv, data = M.login(email_account, email_password)
+        rv, mailboxes = M.list()
+        rv, data = M.select(email_folder)
+        rv, data = M.search(None, "ALL")
+        for num in data[0].split():
+            rv, data = M.fetch(num, '(RFC822)')
+            msg = email.message_from_string(data[0][1])
+            for part in email.iterators.typed_subpart_iterator(msg, 'text', 'html'):
+                html = base64.b64decode(skipline(str(part), 4))
+                html = html[html.index("activate=")+9:]
+                return html[:html.index('\"')]
+        M.close()
+        M.logout()
