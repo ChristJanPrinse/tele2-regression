@@ -15,7 +15,7 @@ FIRSTNAME = {
     'empty': '',
 }
 
-HOUSENUMBER ={
+HOUSENUMBER = {
     'corrected': ' 1',
     'default': 7,
     'number_suffix': 7,
@@ -50,7 +50,7 @@ PHONENUMBER = {
     'corrected': 'asdadasd, 12313adasdas, 06-12345678, 06 12345678,',
 }
 
-POSTCODE ={
+POSTCODE = {
     'correct': '5331XW',
     'number_suffix': '1097LW',
     'not_existing': '9999ZZ',

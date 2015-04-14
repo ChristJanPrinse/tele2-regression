@@ -142,7 +142,7 @@ class Tele2Test(unittest.TestCase):
 
     # noinspection PyArgumentList
     def go_to_step1(self, workflow, profile='default'):
-        self.go_to_configpage(workflow, profile)
+        self.go_to_configpage(workflow)
         # workaround a-b testing
         try:
             self.driver.find_element_by_css_selector('a.fld_button[title*="Sim Only abonnement"]').click()
