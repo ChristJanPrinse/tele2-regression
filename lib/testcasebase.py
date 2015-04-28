@@ -6,6 +6,7 @@ from random import randint
 
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import Select
@@ -18,10 +19,56 @@ test = []
 
 # noinspection PyBroadException
 class Tele2Test(unittest.TestCase):
+    def getactivationcode(email_account="automatedmailbox@gmail.com", email_password="Selenium123", email_folder="inbox"):
+        def skipline(base, i=1):
+            return '\n'.join(base.split('\n')[i:])
+        M = imaplib.IMAP4_SSL('imap.gmail.com')
+        rv, data = M.login(email_account, email_password)
+        rv, mailboxes = M.list()
+        rv, data = M.select(email_folder)
+        rv, data = M.search(None, "ALL")
+        for num in data[0].split():
+            rv, data = M.fetch(num, '(RFC822)')
+            msg = email.message_from_string(data[0][1])
+            for part in email.iterators.typed_subpart_iterator(msg, 'text', 'html'):
+                html = base64.b64decode(skipline(str(part), 4))
+                html = html[html.index("activate=")+9:]
+                return html[:html.index('\"')]
+        M.close()
+        M.logout()
+
     def cookiebar_accept(self):
         self.driver.switch_to.frame(self.driver.find_element_by_css_selector("#qb_cookie_consent_main"))
         self.driver.find_element_by_css_selector('#buttonAccept').click()
         self.driver.switch_to.default_content()
+
+    def click_and_collect_retreave_adress(self, profile='default'):
+        list = []
+        quantity = {}
+        address = []
+        main_window = self.driver.current_window_handle
+        self.servicechecker_login(profile)
+        element = self.driver.find_element_by_css_selector('body').text
+        for keys in element.split('Quantity'):
+            list.append(keys)
+        for keys in list:
+            if keys[:6] == 'OnHand':
+                amount = keys[keys.index('OnHand')+8:]
+                amount = str(amount[:amount.index(",")])
+                keys_adress = keys[keys.index('ZipCode')+9:]
+                keys_adress = keys_adress[:keys_adress.index(",")]
+                adress = ''
+                for part in keys_adress.split('"'):
+                    adress += part
+                    adress = str(adress)
+                    adress = adress.replace(" ", "")
+                quantity[amount] = adress
+        for key in quantity:
+            if key > 0:
+                address.append(quantity[key])
+        self.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 'w')
+        self.driver.switch_to.window(main_window)
+        return address
 
     def dropdownselector(self, profile, part, selector, entry, entry_type):
         self.elementcheck(part, selector, click=True)
@@ -158,7 +205,7 @@ class Tele2Test(unittest.TestCase):
             self.get_screenshot('configure_page', 'succes')
             self.elementcheck('prepaid', 'button_order', click=True)
 
-    def go_to_step2(self, workflow, profile='default'):
+    def go_to_step2(self, workflow, profile='default', c&c= True):
         self.go_to_step1(workflow, profile)
         self.dropdownselector(profile, 'step_1', 'select_gender', 'gender', 'gender')
         self.elementcheck('step_1', 'input_firstname', keys=settings.PROFILES[profile]['firstname'])
@@ -262,6 +309,21 @@ class Tele2Test(unittest.TestCase):
             self.driver.find_element_by_css_selector('#btnChooseIban').click()
             self.assertEqual(key, actual)
 
+    def servicechecker_login(self, profile):
+        self.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')
+        self.driver.get('http://espresso-3g-uat.tele2.nl:11111/shop/shell/servicesChecker.php')
+        # insert request url
+        self.driver.find_element_by_css_selector('input[name="requesturl"]').send_keys(
+            'https://acceptatie-wpos.basgroup.nl/servicestack/json/syncreply/')
+        # insert security token
+        self.driver.find_element_by_css_selector('input[name="token"]').send_keys(
+            '17122D63B0628A2D77B827F3851AA94A296B8B8E1ED9AA4BA76136521216983A')
+        # insert zip code
+        self.driver.find_element_by_css_selector('input[name="zipcode"]').send_keys('5224AC')
+        self.driver.find_element_by_css_selector('input[name="range"]').send_keys('20')
+        self.driver.find_element_by_css_selector('input[name="itemnumber"]').send_keys('802855')
+        self.driver.find_element_by_css_selector('input[name="send"]').click()
+
     def shoppingcart_configpage(self):
         # select price internet bundle
         internet_bundle = self.driver.find_element_by_css_selector(
@@ -276,7 +338,7 @@ class Tele2Test(unittest.TestCase):
         subtotal = int(subtotal[:3][1:])
         # add up sms bundle and internet bundle
         bundle_total = int(internet_bundle) + int(sms_bundle)
-        #   assert bundle total and subtotal
+        # assert bundle total and subtotal
         self.assertEqual(subtotal, bundle_total)
 
     def shoppingcart_step1(self):
@@ -313,5 +375,5 @@ class Tele2Test(unittest.TestCase):
         self.driver.get('https://www.tele2.nl/')
 
     def tearDown(self):
-        # Quit the browser
+        #   Quit the browser
         self.driver.quit()
