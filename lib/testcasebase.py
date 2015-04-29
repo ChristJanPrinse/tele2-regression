@@ -1,6 +1,7 @@
 import unittest
 import time
 import os
+import re
 from datetime import datetime
 from random import randint
 
@@ -42,10 +43,9 @@ class Tele2Test(unittest.TestCase):
         self.driver.find_element_by_css_selector('#buttonAccept').click()
         self.driver.switch_to.default_content()
 
-    def click_and_collect_retreave_adress(self, profile='default'):
+    def click_and_collect_retrieve_adress(self, profile='default'):
         list = []
-        quantity = {}
-        address = []
+        address = {}
         main_window = self.driver.current_window_handle
         self.servicechecker_login(profile)
         element = self.driver.find_element_by_css_selector('body').text
@@ -55,17 +55,18 @@ class Tele2Test(unittest.TestCase):
             if keys[:6] == 'OnHand':
                 amount = keys[keys.index('OnHand')+8:]
                 amount = str(amount[:amount.index(",")])
-                keys_adress = keys[keys.index('ZipCode')+9:]
-                keys_adress = keys_adress[:keys_adress.index(",")]
-                adress = ''
-                for part in keys_adress.split('"'):
-                    adress += part
-                    adress = str(adress)
-                    adress = adress.replace(" ", "")
-                quantity[amount] = adress
-        for key in quantity:
-            if key > 0:
-                address.append(quantity[key])
+                keys_postcode = keys[keys.index('ZipCode')+9:]
+                keys_postcode = keys_postcode[:keys_postcode.index(",")]
+                keys_housenumber = keys[keys.index('Address')+9:]
+                keys_housenumber = keys_housenumber[:keys_housenumber.index(",")]
+                keys_housenumber = int(re.search(r'\d+', keys_housenumber).group())
+                postcode = ''
+                for part in keys_postcode.split('"'):
+                    postcode += part
+                    postcode = str(postcode)
+                    postcode = postcode.replace(" ", "")
+                if amount > 0:
+                    address[postcode] = keys_housenumber
         self.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 'w')
         self.driver.switch_to.window(main_window)
         return address
@@ -205,7 +206,7 @@ class Tele2Test(unittest.TestCase):
             self.get_screenshot('configure_page', 'succes')
             self.elementcheck('prepaid', 'button_order', click=True)
 
-    def go_to_step2(self, workflow, profile='default', c&c= True):
+    def go_to_step2(self, workflow, profile='default', c_c= True):
         self.go_to_step1(workflow, profile)
         self.dropdownselector(profile, 'step_1', 'select_gender', 'gender', 'gender')
         self.elementcheck('step_1', 'input_firstname', keys=settings.PROFILES[profile]['firstname'])
@@ -215,8 +216,14 @@ class Tele2Test(unittest.TestCase):
             self.dropdownselector(profile, 'step_1', 'select_day', 'day', 'day')
             self.dropdownselector(profile, 'step_1', 'select_month', 'month', 'month')
             self.dropdownselector(profile, 'step_1', 'select_year', 'year', 'year')
-        self.elementcheck('step_1', 'input_postcode', keys=settings.PROFILES[profile]['postcode'])
-        self.elementcheck('step_1', 'input_housenumber', keys=settings.PROFILES[profile]['housenumber'])
+        if c_c == True:
+            address = self.click_and_collect_retrieve_adress(profile)
+            self.elementcheck('step_1', 'input_postcode', keys=address.values()[0])
+            self.elementcheck('step_1', 'input_housenumber', keys=address.keys()[0])
+            self.driver.find_element_by_css_selector('#street').click()
+        else:
+            self.elementcheck('step_1', 'input_postcode', keys=settings.PROFILES[profile]['postcode'])
+            self.elementcheck('step_1', 'input_housenumber', keys=settings.PROFILES[profile]['housenumber'])
         self.elementcheck('step_1', 'input_phonenumber', keys=settings.PROFILES[profile]['phonenumber'])
         self.elementcheck('step_1', 'input_e-mail', keys=settings.PROFILES[profile]['email'])
         self.elementcheck('step_1', 'input_repeat_email', keys=settings.PROFILES[profile]['repeat_email'])

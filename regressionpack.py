@@ -36,7 +36,7 @@ class HandsetWorkflows(lib.testcasebase.Tele2Test):
         self.get_screenshot('succesfull', 'test_handset_postpaid_porting_clickandcollect')
 
     def test_retreave(self, profile='default'):
-        address = self.click_and_collect_retreave_adress(profile)
+        address = self.click_and_collect_retrieve_adress(profile)
         print address
 
 class PrepaidWorkflows(lib.testcasebase.Tele2Test):
