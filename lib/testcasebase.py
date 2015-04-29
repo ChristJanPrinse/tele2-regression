@@ -79,9 +79,9 @@ class Extensions(object):
 class Tele2Test(Extensions, unittest.TestCase):
 
     def cookiebar_accept(self):
-        self.driver.switch_to_frame(self.driver.find_element_by_css_selector("#qb_cookie_consent_main"))       
+        self.driver.switch_to.frame(self.driver.find_element_by_css_selector("#qb_cookie_consent_main"))
         self.driver.find_element_by_css_selector('#buttonAccept').click()
-        self.driver.switch_to_default_content()
+        self.driver.switch_to.default_content()
 
     def dropdownselector(self, profile, part, selector, entry, entry_type):
         self.elementcheck(part, selector, click=True)

@@ -32,7 +32,7 @@ UI = {
         '1': '#daySelectBoxItOptions li.selectboxit-option[data-val="01"]',
     },
     'homepage': {
-        'button_banner': 'a.fld_button[title="Tele2 Sim Only"]',
+        'button_banner': 'a.fld_button[title="Sim Only abonnement"]',
     },
     'month': {
         '1': '#monthSelectBoxItOptions li.selectboxit-option[data-val="01"]',
