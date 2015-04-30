@@ -152,7 +152,7 @@ class Tele2Test(unittest.TestCase):
             self.elementcheck('menu', 'link_sim_only', click=True)
         elif workflow == 'handset':
             self.elementcheck('menu', 'link_handset', click=True)
-            if c_c:
+            if c_c == True:
                 self.hover_article('#product-list-item-3011 .default-state')
                 self.driver.find_element_by_css_selector('.preview-img-link[data-url*="-s5/"]').click()
             else:
@@ -193,7 +193,7 @@ class Tele2Test(unittest.TestCase):
             self.get_screenshot('configure_page', 'succes')
             self.elementcheck('prepaid', 'button_order', click=True)
 
-    def go_to_step2(self, workflow, c_c, profile='default'):
+    def go_to_step2(self, workflow, c_c=False, profile='default'):
         self.go_to_step1(workflow, c_c, profile)
         self.dropdownselector(profile, 'step_1', 'select_gender', 'gender', 'gender')
         self.elementcheck('step_1', 'input_firstname', keys=settings.PROFILES[profile]['firstname'])
@@ -203,7 +203,7 @@ class Tele2Test(unittest.TestCase):
             self.dropdownselector(profile, 'step_1', 'select_day', 'day', 'day')
             self.dropdownselector(profile, 'step_1', 'select_month', 'month', 'month')
             self.dropdownselector(profile, 'step_1', 'select_year', 'year', 'year')
-        if c_c:
+        if c_c == True:
             address = self.click_and_collect_retrieve_adress(profile)
             housenumber = address.values()[0]
             housenumber = int(re.search(r'\d+', housenumber).group())
@@ -228,6 +228,7 @@ class Tele2Test(unittest.TestCase):
         else:
             self.elementcheck('step_1', 'input_postcode', keys=settings.PROFILES[profile]['postcode'])
             self.elementcheck('step_1', 'input_housenumber', keys=settings.PROFILES[profile]['housenumber'])
+            self.driver.find_element_by_css_selector('#street').click()
             count = 0
             profile_streetname = settings.PROFILES[profile]['streetname']
             while not (self.driver.find_element_by_css_selector('#street').get_attribute("value") == profile_streetname):
