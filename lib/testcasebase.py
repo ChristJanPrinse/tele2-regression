@@ -37,6 +37,7 @@ class Tele2Test(unittest.TestCase):
             if keys[:6] == 'OnHand':
                 amount = keys[keys.index('OnHand')+8:]
                 amount = str(amount[:amount.index(",")])
+                amount = int(amount)
                 keys_postcode = keys[keys.index('ZipCode')+9:]
                 keys_postcode = keys_postcode[:keys_postcode.index(",")]
                 keys_housenumber = keys[keys.index('Address')+9:]
@@ -144,17 +145,21 @@ class Tele2Test(unittest.TestCase):
         self.driver.get_screenshot_as_file(
             'H:\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))
 
-    def go_to_configpage(self, workflow):
+    def go_to_configpage(self, workflow, c_c=False):
         self.cookiebar_accept()
         self.hover('menu', 'link_mobiel')
         if workflow == 'sim_only':
             self.elementcheck('menu', 'link_sim_only', click=True)
         elif workflow == 'handset':
             self.elementcheck('menu', 'link_handset', click=True)
-            handset = '.phones_wrapper.abonnement > article:nth-child(%s)' % randint(1, 9)
-            self.hover_article(handset)
-            handset = '%s %s' % (handset, 'a.preview-img-link')
-            self.driver.find_element_by_css_selector(handset).click()
+            if c_c:
+                self.hover_article('#product-list-item-3011 .default-state')
+                self.driver.find_element_by_css_selector('.preview-img-link[data-url*="-s5/"]').click()
+            else:
+                handset = '.phones_wrapper.abonnement > article:nth-child(%s)' % randint(1, 9)
+                self.hover_article(handset)
+                handset = '%s %s' % (handset, 'a.preview-img-link')
+                self.driver.find_element_by_css_selector(handset).click()
         elif workflow == 'simonly_prepaid':
             self.elementcheck('menu', 'link_prepaid', click=True)
             self.elementcheck('overview_page', 'prepaid_simonly', click=True)
@@ -171,8 +176,8 @@ class Tele2Test(unittest.TestCase):
             self.fail('er gaat iets mis met de workflow selectie')
 
     # noinspection PyArgumentList
-    def go_to_step1(self, workflow, profile='default'):
-        self.go_to_configpage(workflow)
+    def go_to_step1(self, workflow, c_c, profile='default'):
+        self.go_to_configpage(workflow, c_c)
         # workaround a-b testing
         try:
             self.driver.find_element_by_css_selector('a.fld_button[title*="Sim Only abonnement"]').click()
@@ -189,7 +194,7 @@ class Tele2Test(unittest.TestCase):
             self.elementcheck('prepaid', 'button_order', click=True)
 
     def go_to_step2(self, workflow, c_c, profile='default'):
-        self.go_to_step1(workflow, profile)
+        self.go_to_step1(workflow, c_c, profile)
         self.dropdownselector(profile, 'step_1', 'select_gender', 'gender', 'gender')
         self.elementcheck('step_1', 'input_firstname', keys=settings.PROFILES[profile]['firstname'])
         self.elementcheck('step_1', 'input_lastname', keys=settings.PROFILES[profile]['lastname'])
@@ -205,12 +210,14 @@ class Tele2Test(unittest.TestCase):
             c_c_streetname = address.values()[0]
             c_c_streetname = ''.join([i for i in c_c_streetname if not i.isdigit()])
             c_c_streetname = c_c_streetname.replace(" ", "")
-            c_c_streetname = c_c_streetname.replace('"', '')
+            c_c_streetname = c_c_streetname.replace('"', '').replace("-", "")
             self.elementcheck('step_1', 'input_postcode', keys=address.keys()[0])
             self.elementcheck('step_1', 'input_housenumber', keys=housenumber)
             self.driver.find_element_by_css_selector('#street').click()
+            current_streetname = self.driver.find_element_by_css_selector('#street').get_attribute("value")
+            print current_streetname
             count = 0
-            while not (self.driver.find_element_by_css_selector('#street').get_attribute("value") == c_c_streetname):
+            while not c_c_streetname in self.driver.find_element_by_css_selector('#street').get_attribute("value"):
                 if count >= 50:
                     self.get_screenshot('step_1', 'input_street')
                     # if no selector is found, spit out an error
@@ -237,8 +244,8 @@ class Tele2Test(unittest.TestCase):
         self.get_screenshot('step_1', 'succes')
         self.elementcheck('step_1', 'button_next_step', click=True)
 
-    def go_to_step3(self, workflow, profile='default'):
-        self.go_to_step2(workflow, profile)
+    def go_to_step3(self, workflow, c_c, profile='default'):
+        self.go_to_step2(workflow, c_c, profile)
         self.elementcheck('step_2', 'input_IBANnumber', keys=settings.PROFILES[profile]['IBAN_number'])
         self.dropdownselector(profile, 'step_2', 'select_document_type', 'document_type', 'document_type')
         self.elementcheck('step_2', 'input_documentnumber', keys=settings.PROFILES[profile]['document_number'])
@@ -257,8 +264,8 @@ class Tele2Test(unittest.TestCase):
         self.elementcheck('step_2', 'button_next_step', click=True)
 
     # noinspection PyRedundantParentheses
-    def go_to_step4(self, workflow, profile='default'):
-        self.go_to_step3(workflow, profile)
+    def go_to_step4(self, workflow, c_c, profile='default'):
+        self.go_to_step3(workflow, c_c, profile)
         if (settings.PROFILES[profile]['delivery']):
             try:
                 self.driver.find_element_by_css_selector('.request-delivery').click()
@@ -315,17 +322,17 @@ class Tele2Test(unittest.TestCase):
 
     def servicechecker_login(self, profile):
         self.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')
-        self.driver.get('http://espresso-3g-uat.tele2.nl:11111/shop/shell/servicesChecker.php')
+        self.driver.get('https://tele2.nl/shop/shell/servicesChecker.php')
         # insert request url
         self.driver.find_element_by_css_selector('input[name="requesturl"]').send_keys(
-            'https://acceptatie-wpos.basgroup.nl/servicestack/json/syncreply/')
+            'https://wpos.basgroup.nl/servicestack/json/syncreply/')
         # insert security token
         self.driver.find_element_by_css_selector('input[name="token"]').send_keys(
             '17122D63B0628A2D77B827F3851AA94A296B8B8E1ED9AA4BA76136521216983A')
         # insert zip code
         self.driver.find_element_by_css_selector('input[name="zipcode"]').send_keys('5224AC')
         self.driver.find_element_by_css_selector('input[name="range"]').send_keys('20')
-        self.driver.find_element_by_css_selector('input[name="itemnumber"]').send_keys('802855')
+        self.driver.find_element_by_css_selector('input[name="itemnumber"]').send_keys('807066')
         self.driver.find_element_by_css_selector('input[name="send"]').click()
 
     def shoppingcart_configpage(self):

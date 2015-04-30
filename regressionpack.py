@@ -24,7 +24,7 @@ class HandsetWorkflows(lib.testcasebase.Tele2Test):
     def test_handset_postpaid_noporting_clickandcollect(self, workflow='handset',
                                                         c_c= True,
                                                         profile='handset_postpaid_noporting_clickandcollect'):
-        self.go_to_step4(workflow, profile)
+        self.go_to_step4(workflow, c_c, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_noporting_clickandcollect')
 
