@@ -20,38 +20,20 @@ test = []
 
 # noinspection PyBroadException
 class Tele2Test(unittest.TestCase):
-    def getactivationcode(email_account="automatedmailbox@gmail.com", email_password="Selenium123", email_folder="inbox"):
-        def skipline(base, i=1):
-            return '\n'.join(base.split('\n')[i:])
-        M = imaplib.IMAP4_SSL('imap.gmail.com')
-        rv, data = M.login(email_account, email_password)
-        rv, mailboxes = M.list()
-        rv, data = M.select(email_folder)
-        rv, data = M.search(None, "ALL")
-        for num in data[0].split():
-            rv, data = M.fetch(num, '(RFC822)')
-            msg = email.message_from_string(data[0][1])
-            for part in email.iterators.typed_subpart_iterator(msg, 'text', 'html'):
-                html = base64.b64decode(skipline(str(part), 4))
-                html = html[html.index("activate=")+9:]
-                return html[:html.index('\"')]
-        M.close()
-        M.logout()
-
     def cookiebar_accept(self):
         self.driver.switch_to.frame(self.driver.find_element_by_css_selector("#qb_cookie_consent_main"))
         self.driver.find_element_by_css_selector('#buttonAccept').click()
         self.driver.switch_to.default_content()
 
     def click_and_collect_retrieve_adress(self, profile='default'):
-        list = []
+        iteration_lines = []
         address = {}
         main_window = self.driver.current_window_handle
         self.servicechecker_login(profile)
         element = self.driver.find_element_by_css_selector('body').text
         for keys in element.split('Quantity'):
-            list.append(keys)
-        for keys in list:
+            iteration_lines.append(keys)
+        for keys in iteration_lines:
             if keys[:6] == 'OnHand':
                 amount = keys[keys.index('OnHand')+8:]
                 amount = str(amount[:amount.index(",")])
@@ -59,7 +41,7 @@ class Tele2Test(unittest.TestCase):
                 keys_postcode = keys_postcode[:keys_postcode.index(",")]
                 keys_housenumber = keys[keys.index('Address')+9:]
                 keys_housenumber = keys_housenumber[:keys_housenumber.index(",")]
-                keys_housenumber = int(re.search(r'\d+', keys_housenumber).group())
+                #   keys_housenumber = int(re.search(r'\d+', keys_housenumber).group())
                 postcode = ''
                 for part in keys_postcode.split('"'):
                     postcode += part
@@ -206,7 +188,7 @@ class Tele2Test(unittest.TestCase):
             self.get_screenshot('configure_page', 'succes')
             self.elementcheck('prepaid', 'button_order', click=True)
 
-    def go_to_step2(self, workflow, profile='default', c_c= True):
+    def go_to_step2(self, workflow, c_c, profile='default'):
         self.go_to_step1(workflow, profile)
         self.dropdownselector(profile, 'step_1', 'select_gender', 'gender', 'gender')
         self.elementcheck('step_1', 'input_firstname', keys=settings.PROFILES[profile]['firstname'])
@@ -216,27 +198,42 @@ class Tele2Test(unittest.TestCase):
             self.dropdownselector(profile, 'step_1', 'select_day', 'day', 'day')
             self.dropdownselector(profile, 'step_1', 'select_month', 'month', 'month')
             self.dropdownselector(profile, 'step_1', 'select_year', 'year', 'year')
-        if c_c == True:
+        if c_c:
             address = self.click_and_collect_retrieve_adress(profile)
-            self.elementcheck('step_1', 'input_postcode', keys=address.values()[0])
-            self.elementcheck('step_1', 'input_housenumber', keys=address.keys()[0])
+            housenumber = address.values()[0]
+            housenumber = int(re.search(r'\d+', housenumber).group())
+            c_c_streetname = address.values()[0]
+            c_c_streetname = ''.join([i for i in c_c_streetname if not i.isdigit()])
+            c_c_streetname = c_c_streetname.replace(" ", "")
+            c_c_streetname = c_c_streetname.replace('"', '')
+            self.elementcheck('step_1', 'input_postcode', keys=address.keys()[0])
+            self.elementcheck('step_1', 'input_housenumber', keys=housenumber)
             self.driver.find_element_by_css_selector('#street').click()
+            count = 0
+            while not (self.driver.find_element_by_css_selector('#street').get_attribute("value") == c_c_streetname):
+                if count >= 50:
+                    self.get_screenshot('step_1', 'input_street')
+                    # if no selector is found, spit out an error
+                    self.fail('finding the adress took longer then 5 seconds')
+                else:
+                    time.sleep(0.1)
+                    count += 1
         else:
             self.elementcheck('step_1', 'input_postcode', keys=settings.PROFILES[profile]['postcode'])
             self.elementcheck('step_1', 'input_housenumber', keys=settings.PROFILES[profile]['housenumber'])
+            count = 0
+            profile_streetname = settings.PROFILES[profile]['streetname']
+            while not (self.driver.find_element_by_css_selector('#street').get_attribute("value") == profile_streetname):
+                if count >= 50:
+                    self.get_screenshot('step_1', 'input_street')
+                    # if no selector is found, spit out an error
+                    self.fail('finding the adress took longer then 5 seconds')
+                else:
+                    time.sleep(0.1)
+                    count += 1
         self.elementcheck('step_1', 'input_phonenumber', keys=settings.PROFILES[profile]['phonenumber'])
         self.elementcheck('step_1', 'input_e-mail', keys=settings.PROFILES[profile]['email'])
         self.elementcheck('step_1', 'input_repeat_email', keys=settings.PROFILES[profile]['repeat_email'])
-        count = 0
-        while not (self.driver.find_element_by_css_selector('#street').get_attribute("value") ==
-                   settings.PROFILES[profile]['streetname']):
-            if count >= 50:
-                self.get_screenshot('step_1', 'input_street')
-                # if no selector is found, spit out an error
-                self.fail('finding the adress took longer then 5 seconds')
-            else:
-                time.sleep(0.1)
-                count += 1
         self.get_screenshot('step_1', 'succes')
         self.elementcheck('step_1', 'button_next_step', click=True)
 
