@@ -176,7 +176,7 @@ class Tele2Test(unittest.TestCase):
             self.fail('er gaat iets mis met de workflow selectie')
 
     # noinspection PyArgumentList
-    def go_to_step1(self, workflow, c_c, profile='default'):
+    def go_to_step1(self, workflow, c_c=False, profile='default'):
         self.go_to_configpage(workflow, c_c)
         # workaround a-b testing
         try:
@@ -245,7 +245,7 @@ class Tele2Test(unittest.TestCase):
         self.get_screenshot('step_1', 'succes')
         self.elementcheck('step_1', 'button_next_step', click=True)
 
-    def go_to_step3(self, workflow, c_c, profile='default'):
+    def go_to_step3(self, workflow, c_c=False, profile='default'):
         self.go_to_step2(workflow, c_c, profile)
         self.elementcheck('step_2', 'input_IBANnumber', keys=settings.PROFILES[profile]['IBAN_number'])
         self.dropdownselector(profile, 'step_2', 'select_document_type', 'document_type', 'document_type')
@@ -265,7 +265,7 @@ class Tele2Test(unittest.TestCase):
         self.elementcheck('step_2', 'button_next_step', click=True)
 
     # noinspection PyRedundantParentheses
-    def go_to_step4(self, workflow, c_c, profile='default'):
+    def go_to_step4(self, workflow, c_c=False, profile='default'):
         self.go_to_step3(workflow, c_c, profile)
         if (settings.PROFILES[profile]['delivery']):
             try:
