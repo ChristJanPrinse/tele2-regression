@@ -133,17 +133,17 @@ class Tele2Test(unittest.TestCase):
         global test
         testcase = unittest.TestCase.id(self)
         testcase = testcase.split('.')[2]
-        newpath = 'H:\output\%s' % test[0]
+        newpath = '.\output\%s' % test[0]
         if not os.path.exists(newpath):
-            os.mkdir('H:\output\%s' % test[0])
-        newpath = 'H:\output\%s\%s' % (test[0], test[1])
+            os.mkdir('.\output\%s' % test[0])
+        newpath = '.\output\%s\%s' % (test[0], test[1])
         if not os.path.exists(newpath):
-            os.mkdir('H:\output\%s\%s' % (test[0], test[1]))
-        newpath = 'H:\output\%s\%s\%s' % (test[0], test[1], testcase)
+            os.mkdir('.\output\%s\%s' % (test[0], test[1]))
+        newpath = '.\output\%s\%s\%s' % (test[0], test[1], testcase)
         if not os.path.exists(newpath):
-            os.mkdir('H:\output\%s\%s\%s' % (test[0], test[1], testcase))
+            os.mkdir('.\output\%s\%s\%s' % (test[0], test[1], testcase))
         self.driver.get_screenshot_as_file(
-            'H:\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))
+            '.\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))
 
     def go_to_configpage(self, workflow, c_c=False):
         self.cookiebar_accept()
@@ -373,8 +373,8 @@ class Tele2Test(unittest.TestCase):
             test.append(date)
             test.append(time_tag)
         fp = webdriver.FirefoxProfile()
-        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\mobile\\addons\\Firebug.xpi')
-        fp.add_extension('C:\\Users\\j-rijnaars\\Documents\\python\\mobile\\addons\\Firefinder.xpi')
+        fp.add_extension('C:\\Users\\Juriaan\\Documents\\tele2-regression\\addons\\Firebug.xpi')
+        fp.add_extension('C:\\Users\\Juriaan\\Documents\\tele2-regression\\addons\\Firefinder.xpi')
         # load up the remote driver and tell it to use Firefox
         self.driver = webdriver.Remote(
             command_executor="http://127.0.0.1:4444/wd/hub",
