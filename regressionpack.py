@@ -210,11 +210,11 @@ class SimOnlyFieldValidation(lib.testcasebase.Tele2Test):
         self.field_validation('step_1', 'input_repeat_email', 'input_firstname', settings.EMAIL, 'incorrect',
                               'repeat_email')
 
-    def test_IBANgenerator_correct(self, workflow='sim_only', profile="default"):
+    def test_IBANgenerator_incorrect(self, workflow='sim_only', profile="default"):
         self.go_to_step2(workflow, profile)
         self.IBAN_generator(profile, status='incorrect')
 
-    def test_IBANgenerator_incorrect(self, workflow='sim_only', profile='default'):
+    def test_IBANgenerator_correct(self, workflow='sim_only', profile='default'):
         self.go_to_step2(workflow, profile)
         #   self.IBAN_generator(profile, 'generator_input_incorrect', True)
 
