@@ -133,17 +133,11 @@ class Tele2Test(unittest.TestCase):
         global test
         testcase = unittest.TestCase.id(self)
         testcase = testcase.split('.')[2]
-        newpath = '.\output\%s' % test[0]
+        newpath = 'C:\Users\Juriaan\Documents\output\%s\%s\%s' % (test[0], test[1], testcase)
         if not os.path.exists(newpath):
-            os.mkdir('.\output\%s' % test[0])
-        newpath = '.\output\%s\%s' % (test[0], test[1])
-        if not os.path.exists(newpath):
-            os.mkdir('.\output\%s\%s' % (test[0], test[1]))
-        newpath = '.\output\%s\%s\%s' % (test[0], test[1], testcase)
-        if not os.path.exists(newpath):
-            os.mkdir('.\output\%s\%s\%s' % (test[0], test[1], testcase))
+            os.makedirs('C:\Users\Juriaan\Documents\output\%s\%s\%s' % (test[0], test[1], testcase))
         self.driver.get_screenshot_as_file(
-            '.\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))
+            'C:\Users\Juriaan\Documents\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))
 
     def go_to_configpage(self, workflow, c_c=False):
         self.cookiebar_accept()
@@ -312,14 +306,15 @@ class Tele2Test(unittest.TestCase):
         hover.perform()
 
     def IBAN_generator(self, profile, status):
-        self.driver.find_element_by_css_selector('a.label-help').click()
-        self.dropdownselector(profile, 'step_2', 'select_bank', 'bank', 'bank')
         keys = settings.BANKACCOUNT[status]
         for key in keys:
+            self.driver.find_element_by_css_selector('a.label-help').click()
+            self.dropdownselector(profile, 'step_2', 'select_bank', 'bank', 'bank')
             self.driver.find_element_by_css_selector('#bban').send_keys('key')
             actual = self.driver.find_element_by_css_selector('#ibannummer').get_attribute("value")
             self.driver.find_element_by_css_selector('#btnChooseIban').click()
-            self.assertEqual(key, actual)
+            self.assertNotEqual(key, actual)
+
 
     def servicechecker_login(self, profile):
         self.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')
