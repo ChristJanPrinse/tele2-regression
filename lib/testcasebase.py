@@ -35,12 +35,12 @@ class Tele2Test(unittest.TestCase):
             iteration_lines.append(keys)
         for keys in iteration_lines:
             if keys[:6] == 'OnHand':
-                amount = keys[keys.index('OnHand')+8:]
+                amount = keys[keys.index('OnHand') +8:]
                 amount = str(amount[:amount.index(",")])
                 amount = int(amount)
-                keys_postcode = keys[keys.index('ZipCode')+9:]
+                keys_postcode = keys[keys.index('ZipCode') +9:]
                 keys_postcode = keys_postcode[:keys_postcode.index(",")]
-                keys_housenumber = keys[keys.index('Address')+9:]
+                keys_housenumber = keys[keys.index('Address') +9:]
                 keys_housenumber = keys_housenumber[:keys_housenumber.index(",")]
                 #   keys_housenumber = int(re.search(r'\d+', keys_housenumber).group())
                 postcode = ''
