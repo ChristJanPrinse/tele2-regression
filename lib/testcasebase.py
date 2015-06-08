@@ -133,11 +133,11 @@ class Tele2Test(unittest.TestCase):
         global test
         testcase = unittest.TestCase.id(self)
         testcase = testcase.split('.')[2]
-        newpath = 'C:\Users\Juriaan\Documents\output\%s\%s\%s' % (test[0], test[1], testcase)
+        newpath = 'H:\output\%s\%s\%s' % (test[0], test[1], testcase)
         if not os.path.exists(newpath):
-            os.makedirs('C:\Users\Juriaan\Documents\output\%s\%s\%s' % (test[0], test[1], testcase))
+            os.makedirs('H:\output\%s\%s\%s' % (test[0], test[1], testcase))
         self.driver.get_screenshot_as_file(
-            'C:\Users\Juriaan\Documents\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))
+            'H:\output\%s\%s\%s\%s %s.png' % (test[0], test[1], testcase, part, selector))
 
     def go_to_configpage(self, workflow, c_c=False):
         self.cookiebar_accept()
@@ -315,7 +315,6 @@ class Tele2Test(unittest.TestCase):
             self.driver.find_element_by_css_selector('#btnChooseIban').click()
             self.assertNotEqual(key, actual)
 
-
     def servicechecker_login(self, profile):
         self.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')
         self.driver.get('https://tele2.nl/shop/shell/servicesChecker.php')
@@ -332,6 +331,10 @@ class Tele2Test(unittest.TestCase):
         self.driver.find_element_by_css_selector('input[name="send"]').click()
 
     def shoppingcart_configpage(self):
+        try:
+            self.driver.find_element_by_css_selector('a.fld_button[title*="Sim Only abonnement"]').click()
+        except:
+            pass
         # select price internet bundle
         internet_bundle = self.driver.find_element_by_css_selector(
             '#data-subscription-listSelectBoxItContainer .selectbox-subscription-value').text
@@ -368,8 +371,8 @@ class Tele2Test(unittest.TestCase):
             test.append(date)
             test.append(time_tag)
         fp = webdriver.FirefoxProfile()
-        fp.add_extension('C:\\Users\\Juriaan\\Documents\\tele2-regression\\addons\\Firebug.xpi')
-        fp.add_extension('C:\\Users\\Juriaan\\Documents\\tele2-regression\\addons\\Firefinder.xpi')
+        fp.add_extension('.\\addons\\Firebug.xpi')
+        fp.add_extension('.\\addons\\Firefinder.xpi')
         # load up the remote driver and tell it to use Firefox
         self.driver = webdriver.Remote(
             command_executor="http://127.0.0.1:4444/wd/hub",
@@ -377,7 +380,6 @@ class Tele2Test(unittest.TestCase):
             browser_profile=fp)
         self.driver.implicitly_wait(10)
         self.driver.set_window_size(1280, 1024)
-
         # navigate to URL and log in as developer (since the script creates a new instance with clean cache)
         self.driver.get('https://www.tele2.nl/')
 
