@@ -16,7 +16,8 @@ class HandsetWorkflows(lib.testcasebase.Tele2Test):
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_noporting_delivery')
 
-    def test_handset_postpaid_porting_delivery(self, workflow='handset', profile='handset_postpaid_porting_delivery'):
+    def test_handset_postpaid_porting_delivery(self, workflow='handset',
+                                               profile='handset_postpaid_porting_delivery'):
         self.go_to_step4(workflow, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_porting_delivery')
@@ -242,7 +243,8 @@ class SimOnlyWorkflows(lib.testcasebase.Tele2Test):
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_simonly_postpaid_noporting_delivery')
 
-    def test_simonly_postpaid_porting_delivery(self, workflow='sim_only', profile='simonly_postpaid_porting_delivery'):
+    def test_simonly_postpaid_porting_delivery(self, workflow='sim_only',
+                                               profile='simonly_postpaid_porting_delivery'):
         self.go_to_step4(workflow, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_simonly_postpaid_porting_delivery')
@@ -277,7 +279,6 @@ class SimOnlyShoppingcart(lib.testcasebase.Tele2Test):
                 TEST GATHERER AND RUNNER - REPORT CREATING
 ------------------------------------------------------------------------------------------------------------------------
 '''
-
 
 if __name__ == "__main__":
     lib.testcasebase.unittest.main(verbosity=2)
