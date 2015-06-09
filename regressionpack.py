@@ -252,14 +252,14 @@ class SimOnlyWorkflows(lib.testcasebase.Tele2Test):
     def test_simonly_postpaid_noporting_clickandcollect(self, workflow='sim_only',
                                                         profile='simonly_postpaid_noporting_clickandcollect',
                                                         c_c=True):
-        self.go_to_step4(workflow, profile)
+        self.go_to_step4(workflow, c_c, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_simonly_postpaid_noporting_clickandcollect')
 
     def test_simonly_postpaid_porting_clickandcollect(self, workflow='sim_only',
                                                       profile='simonly_postpaid_porting_clickandcollect',
                                                       c_c=True):
-        self.go_to_step4(workflow, profile)
+        self.go_to_step4(workflow, c_c, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_simonly_postpaid_porting_clickandcollect')
 
