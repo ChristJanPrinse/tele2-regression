@@ -242,6 +242,7 @@ class SimOnlyWorkflows(lib.testcasebase.Tele2Test):
         self.go_to_step4(workflow, profile)
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_simonly_postpaid_noporting_delivery')
+        self.marketingwebchecker()
 
     def test_simonly_postpaid_porting_delivery(self, workflow='sim_only',
                                                profile='simonly_postpaid_porting_delivery'):
