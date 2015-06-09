@@ -315,6 +315,9 @@ class Tele2Test(unittest.TestCase):
             self.driver.find_element_by_css_selector('#btnChooseIban').click()
             self.assertNotEqual(key, actual)
 
+    def marketingwebchecker(self):
+        self.fail('moet nog gemaakt worden')
+
     def servicechecker_login(self, profile):
         self.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')
         self.driver.get('https://tele2.nl/shop/shell/servicesChecker.php')
