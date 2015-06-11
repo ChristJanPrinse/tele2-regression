@@ -316,7 +316,7 @@ class Tele2Test(unittest.TestCase):
             self.assertNotEqual(key, actual)
 
     def marketingwebchecker(self):
-        self.fail('moet nog gemaakt worden')
+        self.driver.get("http://marketingweb.itservices.lan/reports/mobile/sales/magento/magento.php")
 
     def servicechecker_login(self, profile):
         self.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')
@@ -390,3 +390,6 @@ class Tele2Test(unittest.TestCase):
     def tearDown(self):
         #   Quit the browser
         self.driver.quit()
+
+    def given(self, url):
+        self.driver.get(url)

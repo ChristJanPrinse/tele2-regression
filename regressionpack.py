@@ -1,5 +1,8 @@
 import lib.testcasebase
 import settings
+import nose
+from nose.plugins.attrib import attr
+import time
 
 
 '''
@@ -10,6 +13,7 @@ import settings
 
 
 class HandsetWorkflows(lib.testcasebase.Tele2Test):
+
     def test_handset_postpaid_noporting_delivery(self, workflow='handset',
                                                  profile='handset_postpaid_noporting_delivery'):
         self.go_to_step4(workflow, profile)
@@ -36,7 +40,31 @@ class HandsetWorkflows(lib.testcasebase.Tele2Test):
         self.elementcheck('step_4', 'lastpage')
         self.get_screenshot('succesfull', 'test_handset_postpaid_porting_clickandcollect')
 
+    @attr("een")
+    def test_gaaaaaaaaan(self):
+        self.driver.get("http://marketingweb.itservices.lan/")
+        cookie = {'name': 'PHPSESSID',
+                  'value': 'b1d759f6fd94e91ffda17c4e968e8ffb',
+                  'path': '/',
+                  'domain': 'marketingweb.itservices.lan',
+                  'secure': False}
+        self.driver.add_cookie(cookie)
+        self.driver.get("http://marketingweb.itservices.lan/reports/mobile/sales/magento/magento.php")
+        self.driver.find_element_by_css_selector("#output_html").click()
+        check = True
+        numb = 1
+        while check == True:
+            selector = ".result tbody tr:nth-child(%s) td:nth-child(8)" % numb
+            element = self.driver.find_element_by_css_selector(selector)
+            element = element.text
+            print str(element)
+            if element == "WCPOX1000091404":
+                check = False
+            else:
+                numb += 1
 
+
+@attr('workflow')
 class PrepaidWorkflows(lib.testcasebase.Tele2Test):
     def test_simonly_prepaid(self, workflow='simonly_prepaid', profile='simonly_prepaid'):
         self.go_to_step3_prepaid(workflow, profile)
@@ -67,6 +95,7 @@ class SimOnlyFieldCorrection(lib.testcasebase.Tele2Test):
 
 
 class SimOnlyFieldMandatory(lib.testcasebase.Tele2Test):
+    @attr("een")
     def test_gender_mandatory(self, workflow='sim_only'):
         self.go_to_step1(workflow)
         self.elementcheck('step_1', 'button_next_step', click=True)
@@ -235,7 +264,7 @@ class SimOnlyFieldValidation(lib.testcasebase.Tele2Test):
         self.field_validation('step_2', 'input_phonenumber', 'input_IBANnumber', settings.PHONENUMBER, 'incorrect',
                               'phonenumber')
 
-
+@attr('workflow')
 class SimOnlyWorkflows(lib.testcasebase.Tele2Test):
     def test_simonly_postpaid_noporting_delivery(self, workflow='sim_only',
                                                  profile='simonly_postpaid_noporting_delivery',):
